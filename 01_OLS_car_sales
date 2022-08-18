@@ -1,0 +1,3091 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 84,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "import pandas as pd"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>MonthNumeric</th>\n",
+       "      <th>MonthFactor</th>\n",
+       "      <th>Year</th>\n",
+       "      <th>RAV4Sales</th>\n",
+       "      <th>Unemployment</th>\n",
+       "      <th>RAV4Queries</th>\n",
+       "      <th>CPIAll</th>\n",
+       "      <th>CPIEnergy</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>1</td>\n",
+       "      <td>January</td>\n",
+       "      <td>2011</td>\n",
+       "      <td>11196</td>\n",
+       "      <td>9.1</td>\n",
+       "      <td>29</td>\n",
+       "      <td>221.187</td>\n",
+       "      <td>229.258</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>2</td>\n",
+       "      <td>February</td>\n",
+       "      <td>2011</td>\n",
+       "      <td>12562</td>\n",
+       "      <td>9.0</td>\n",
+       "      <td>29</td>\n",
+       "      <td>221.898</td>\n",
+       "      <td>232.068</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>3</td>\n",
+       "      <td>March</td>\n",
+       "      <td>2011</td>\n",
+       "      <td>16082</td>\n",
+       "      <td>9.0</td>\n",
+       "      <td>29</td>\n",
+       "      <td>223.046</td>\n",
+       "      <td>240.079</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>4</td>\n",
+       "      <td>April</td>\n",
+       "      <td>2011</td>\n",
+       "      <td>15586</td>\n",
+       "      <td>9.1</td>\n",
+       "      <td>27</td>\n",
+       "      <td>224.093</td>\n",
+       "      <td>247.977</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>5</td>\n",
+       "      <td>May</td>\n",
+       "      <td>2011</td>\n",
+       "      <td>8624</td>\n",
+       "      <td>9.0</td>\n",
+       "      <td>28</td>\n",
+       "      <td>224.806</td>\n",
+       "      <td>250.744</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>...</th>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>115</th>\n",
+       "      <td>8</td>\n",
+       "      <td>August</td>\n",
+       "      <td>2020</td>\n",
+       "      <td>39239</td>\n",
+       "      <td>8.4</td>\n",
+       "      <td>94</td>\n",
+       "      <td>259.681</td>\n",
+       "      <td>194.430</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>116</th>\n",
+       "      <td>9</td>\n",
+       "      <td>September</td>\n",
+       "      <td>2020</td>\n",
+       "      <td>43652</td>\n",
+       "      <td>7.8</td>\n",
+       "      <td>88</td>\n",
+       "      <td>260.209</td>\n",
+       "      <td>195.990</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>117</th>\n",
+       "      <td>10</td>\n",
+       "      <td>October</td>\n",
+       "      <td>2020</td>\n",
+       "      <td>40717</td>\n",
+       "      <td>6.9</td>\n",
+       "      <td>89</td>\n",
+       "      <td>260.325</td>\n",
+       "      <td>196.269</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>118</th>\n",
+       "      <td>11</td>\n",
+       "      <td>November</td>\n",
+       "      <td>2020</td>\n",
+       "      <td>40250</td>\n",
+       "      <td>6.7</td>\n",
+       "      <td>79</td>\n",
+       "      <td>260.817</td>\n",
+       "      <td>197.112</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>119</th>\n",
+       "      <td>12</td>\n",
+       "      <td>December</td>\n",
+       "      <td>2020</td>\n",
+       "      <td>46846</td>\n",
+       "      <td>6.7</td>\n",
+       "      <td>85</td>\n",
+       "      <td>261.775</td>\n",
+       "      <td>205.084</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>120 rows × 8 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "     MonthNumeric MonthFactor  Year  RAV4Sales  Unemployment  RAV4Queries  \\\n",
+       "0               1     January  2011      11196           9.1           29   \n",
+       "1               2    February  2011      12562           9.0           29   \n",
+       "2               3       March  2011      16082           9.0           29   \n",
+       "3               4       April  2011      15586           9.1           27   \n",
+       "4               5         May  2011       8624           9.0           28   \n",
+       "..            ...         ...   ...        ...           ...          ...   \n",
+       "115             8      August  2020      39239           8.4           94   \n",
+       "116             9   September  2020      43652           7.8           88   \n",
+       "117            10     October  2020      40717           6.9           89   \n",
+       "118            11    November  2020      40250           6.7           79   \n",
+       "119            12    December  2020      46846           6.7           85   \n",
+       "\n",
+       "      CPIAll  CPIEnergy  \n",
+       "0    221.187    229.258  \n",
+       "1    221.898    232.068  \n",
+       "2    223.046    240.079  \n",
+       "3    224.093    247.977  \n",
+       "4    224.806    250.744  \n",
+       "..       ...        ...  \n",
+       "115  259.681    194.430  \n",
+       "116  260.209    195.990  \n",
+       "117  260.325    196.269  \n",
+       "118  260.817    197.112  \n",
+       "119  261.775    205.084  \n",
+       "\n",
+       "[120 rows x 8 columns]"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "car = pd.read_csv('RAV4-142-Spring2021.csv')\n",
+    "car"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Part A"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "car_train = car[car['Year'] <= 2016]\n",
+    "car_test = car[car['Year'] >= 2017]\n",
+    "car_test;"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Training the Model"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "                            OLS Regression Results                            \n",
+      "==============================================================================\n",
+      "Dep. Variable:              RAV4Sales   R-squared:                       0.810\n",
+      "Model:                            OLS   Adj. R-squared:                  0.799\n",
+      "Method:                 Least Squares   F-statistic:                     71.42\n",
+      "Date:                Tue, 09 Feb 2021   Prob (F-statistic):           1.93e-23\n",
+      "Time:                        15:55:33   Log-Likelihood:                -683.31\n",
+      "No. Observations:                  72   AIC:                             1377.\n",
+      "Df Residuals:                      67   BIC:                             1388.\n",
+      "Df Model:                           4                                         \n",
+      "Covariance Type:            nonrobust                                         \n",
+      "================================================================================\n",
+      "                   coef    std err          t      P>|t|      [0.025      0.975]\n",
+      "--------------------------------------------------------------------------------\n",
+      "Intercept     1.961e+04   9.36e+04      0.210      0.835   -1.67e+05    2.06e+05\n",
+      "Unemployment -2874.1879   1606.504     -1.789      0.078   -6080.784     332.408\n",
+      "RAV4Queries    240.9823    106.555      2.262      0.027      28.297     453.668\n",
+      "CPIAll          48.2031    396.625      0.122      0.904    -743.464     839.870\n",
+      "CPIEnergy       -2.9213     43.674     -0.067      0.947     -90.094      84.251\n",
+      "==============================================================================\n",
+      "Omnibus:                        9.866   Durbin-Watson:                   1.586\n",
+      "Prob(Omnibus):                  0.007   Jarque-Bera (JB):               13.668\n",
+      "Skew:                           0.532   Prob(JB):                      0.00108\n",
+      "Kurtosis:                       4.851   Cond. No.                     7.88e+04\n",
+      "==============================================================================\n",
+      "\n",
+      "Warnings:\n",
+      "[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.\n",
+      "[2] The condition number is large, 7.88e+04. This might indicate that there are\n",
+      "strong multicollinearity or other numerical problems.\n"
+     ]
+    }
+   ],
+   "source": [
+    "import statsmodels.formula.api as smf\n",
+    "\n",
+    "ols = smf.ols(formula='RAV4Sales ~ Unemployment + RAV4Queries + CPIAll + CPIEnergy', data=car_train)\n",
+    "model1 =ols.fit()\n",
+    "print(model1.summary())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "                            OLS Regression Results                            \n",
+      "==============================================================================\n",
+      "Dep. Variable:              RAV4Sales   R-squared:                       0.810\n",
+      "Model:                            OLS   Adj. R-squared:                  0.799\n",
+      "Method:                 Least Squares   F-statistic:                     71.42\n",
+      "Date:                Tue, 09 Feb 2021   Prob (F-statistic):           1.93e-23\n",
+      "Time:                        15:55:33   Log-Likelihood:                -683.31\n",
+      "No. Observations:                  72   AIC:                             1377.\n",
+      "Df Residuals:                      67   BIC:                             1388.\n",
+      "Df Model:                           4                                         \n",
+      "Covariance Type:            nonrobust                                         \n",
+      "================================================================================\n",
+      "                   coef    std err          t      P>|t|      [0.025      0.975]\n",
+      "--------------------------------------------------------------------------------\n",
+      "const         1.961e+04   9.36e+04      0.210      0.835   -1.67e+05    2.06e+05\n",
+      "Unemployment -2874.1879   1606.504     -1.789      0.078   -6080.784     332.408\n",
+      "RAV4Queries    240.9823    106.555      2.262      0.027      28.297     453.668\n",
+      "CPIAll          48.2031    396.625      0.122      0.904    -743.464     839.870\n",
+      "CPIEnergy       -2.9213     43.674     -0.067      0.947     -90.094      84.251\n",
+      "==============================================================================\n",
+      "Omnibus:                        9.866   Durbin-Watson:                   1.586\n",
+      "Prob(Omnibus):                  0.007   Jarque-Bera (JB):               13.668\n",
+      "Skew:                           0.532   Prob(JB):                      0.00108\n",
+      "Kurtosis:                       4.851   Cond. No.                     7.88e+04\n",
+      "==============================================================================\n",
+      "\n",
+      "Warnings:\n",
+      "[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.\n",
+      "[2] The condition number is large, 7.88e+04. This might indicate that there are\n",
+      "strong multicollinearity or other numerical problems.\n"
+     ]
+    }
+   ],
+   "source": [
+    "# MATRIX STYLE TRAINING \n",
+    "# Import the library that contains all the functions/modules related to the regression model\n",
+    "import statsmodels.api as sm\n",
+    "\n",
+    "# Choose the features to be used\n",
+    "cols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\n",
+    "X_train = car_train[cols]\n",
+    "y_train = car_train['RAV4Sales']\n",
+    "\n",
+    "# We must add an intercept as the standard model doesn't automatically fit one\n",
+    "X_train = sm.add_constant(X_train)\n",
+    "\n",
+    "# Fit the data to the model\n",
+    "model1 = sm.OLS(y_train, X_train).fit()\n",
+    "print(model1.summary())"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Unemployment    37.437684\n",
+       "RAV4Queries      6.231404\n",
+       "CPIAll          28.216088\n",
+       "CPIEnergy        7.220536\n",
+       "dtype: float64"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# calculate Variance Inflation Factor for each explanatory variable\n",
+    "from statsmodels.stats.outliers_influence import variance_inflation_factor\n",
+    "\n",
+    "# The dataframe passed to VIF must include the intercept term. We add it the same way we did before.\n",
+    "def VIF(df, columns):\n",
+    "    values = sm.add_constant(df[columns]).values\n",
+    "    num_columns = len(columns)+1\n",
+    "    vif = [variance_inflation_factor(values, i) for i in range(num_columns)]\n",
+    "    return pd.Series(vif[1:], index=columns)\n",
+    "\n",
+    "cols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\n",
+    "VIF(car_train, cols)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "                            OLS Regression Results                            \n",
+      "==============================================================================\n",
+      "Dep. Variable:              RAV4Sales   R-squared:                       0.801\n",
+      "Model:                            OLS   Adj. R-squared:                  0.792\n",
+      "Method:                 Least Squares   F-statistic:                     91.21\n",
+      "Date:                Tue, 09 Feb 2021   Prob (F-statistic):           8.73e-24\n",
+      "Time:                        15:56:38   Log-Likelihood:                -684.99\n",
+      "No. Observations:                  72   AIC:                             1378.\n",
+      "Df Residuals:                      68   BIC:                             1387.\n",
+      "Df Model:                           3                                         \n",
+      "Covariance Type:            nonrobust                                         \n",
+      "===============================================================================\n",
+      "                  coef    std err          t      P>|t|      [0.025      0.975]\n",
+      "-------------------------------------------------------------------------------\n",
+      "Intercept   -1.379e+05   3.21e+04     -4.290      0.000   -2.02e+05   -7.38e+04\n",
+      "RAV4Queries   200.6189    105.811      1.896      0.062     -10.524     411.762\n",
+      "CPIAll        707.2526    149.379      4.735      0.000     409.171    1005.334\n",
+      "CPIEnergy     -65.3539     26.683     -2.449      0.017    -118.598     -12.110\n",
+      "==============================================================================\n",
+      "Omnibus:                       10.755   Durbin-Watson:                   1.444\n",
+      "Prob(Omnibus):                  0.005   Jarque-Bera (JB):               13.951\n",
+      "Skew:                           0.625   Prob(JB):                     0.000935\n",
+      "Kurtosis:                       4.757   Cond. No.                     2.66e+04\n",
+      "==============================================================================\n",
+      "\n",
+      "Warnings:\n",
+      "[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.\n",
+      "[2] The condition number is large, 2.66e+04. This might indicate that there are\n",
+      "strong multicollinearity or other numerical problems.\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "RAV4Queries    5.952056\n",
+       "CPIAll         3.876882\n",
+       "CPIEnergy      2.610675\n",
+       "dtype: float64"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# remove unemployment\n",
+    "model3 = smf.ols(formula='RAV4Sales ~ RAV4Queries + CPIAll + CPIEnergy', data=car_train).fit()\n",
+    "print(model3.summary())\n",
+    "\n",
+    "cols = ['RAV4Queries', 'CPIAll', 'CPIEnergy']\n",
+    "VIF(car_train, cols)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# remove RAV4Queries\n",
+    "model2 = smf.ols(formula='RAV4Sales ~  CPIAll + CPIEnergy', data=car_train).fit()\n",
+    "print(model2.summary())\n",
+    "\n",
+    "cols = ['CPIAll', 'CPIEnergy']\n",
+    "VIF(car_train, cols)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "                            OLS Regression Results                            \n",
+      "==============================================================================\n",
+      "Dep. Variable:              RAV4Sales   R-squared:                       0.810\n",
+      "Model:                            OLS   Adj. R-squared:                  0.802\n",
+      "Method:                 Least Squares   F-statistic:                     96.62\n",
+      "Date:                Tue, 09 Feb 2021   Prob (F-statistic):           1.81e-24\n",
+      "Time:                        16:09:13   Log-Likelihood:                -683.32\n",
+      "No. Observations:                  72   AIC:                             1375.\n",
+      "Df Residuals:                      68   BIC:                             1384.\n",
+      "Df Model:                           3                                         \n",
+      "Covariance Type:            nonrobust                                         \n",
+      "================================================================================\n",
+      "                   coef    std err          t      P>|t|      [0.025      0.975]\n",
+      "--------------------------------------------------------------------------------\n",
+      "Intercept     3.093e+04   9228.813      3.351      0.001    1.25e+04    4.93e+04\n",
+      "Unemployment -3055.5228    591.161     -5.169      0.000   -4235.166   -1875.880\n",
+      "RAV4Queries    247.0620     93.399      2.645      0.010      60.688     433.436\n",
+      "CPIEnergy        1.1535     27.783      0.042      0.967     -54.287      56.593\n",
+      "==============================================================================\n",
+      "Omnibus:                        9.727   Durbin-Watson:                   1.594\n",
+      "Prob(Omnibus):                  0.008   Jarque-Bera (JB):               13.639\n",
+      "Skew:                           0.516   Prob(JB):                      0.00109\n",
+      "Kurtosis:                       4.866   Cond. No.                     5.54e+03\n",
+      "==============================================================================\n",
+      "\n",
+      "Warnings:\n",
+      "[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.\n",
+      "[2] The condition number is large, 5.54e+03. This might indicate that there are\n",
+      "strong multicollinearity or other numerical problems.\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "Unemployment    5.143926\n",
+       "RAV4Queries     4.857967\n",
+       "CPIEnergy       2.965016\n",
+       "dtype: float64"
+      ]
+     },
+     "execution_count": 10,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# remove CPIAll from original\n",
+    "model2 = smf.ols(formula='RAV4Sales ~ Unemployment + RAV4Queries + CPIEnergy', data=car_train).fit()\n",
+    "print(model2.summary())\n",
+    "\n",
+    "cols = ['Unemployment', 'RAV4Queries', 'CPIEnergy']\n",
+    "VIF(car_train, cols)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "                            OLS Regression Results                            \n",
+      "==============================================================================\n",
+      "Dep. Variable:              RAV4Sales   R-squared:                       0.810\n",
+      "Model:                            OLS   Adj. R-squared:                  0.804\n",
+      "Method:                 Least Squares   F-statistic:                     147.1\n",
+      "Date:                Tue, 09 Feb 2021   Prob (F-statistic):           1.31e-25\n",
+      "Time:                        16:10:40   Log-Likelihood:                -683.32\n",
+      "No. Observations:                  72   AIC:                             1373.\n",
+      "Df Residuals:                      69   BIC:                             1379.\n",
+      "Df Model:                           2                                         \n",
+      "Covariance Type:            nonrobust                                         \n",
+      "================================================================================\n",
+      "                   coef    std err          t      P>|t|      [0.025      0.975]\n",
+      "--------------------------------------------------------------------------------\n",
+      "Intercept     3.118e+04   7016.566      4.443      0.000    1.72e+04    4.52e+04\n",
+      "Unemployment -3046.6355    547.042     -5.569      0.000   -4137.955   -1955.316\n",
+      "RAV4Queries    245.9654     88.936      2.766      0.007      68.544     423.387\n",
+      "==============================================================================\n",
+      "Omnibus:                        9.882   Durbin-Watson:                   1.593\n",
+      "Prob(Omnibus):                  0.007   Jarque-Bera (JB):               14.018\n",
+      "Skew:                           0.520   Prob(JB):                     0.000904\n",
+      "Kurtosis:                       4.895   Cond. No.                         750.\n",
+      "==============================================================================\n",
+      "\n",
+      "Warnings:\n",
+      "[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "Unemployment    4.469452\n",
+       "RAV4Queries     4.469452\n",
+       "dtype: float64"
+      ]
+     },
+     "execution_count": 11,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# remove CPIEnergy\n",
+    "model2 = smf.ols(formula='RAV4Sales ~ Unemployment + RAV4Queries', data=car_train).fit()\n",
+    "print(model2.summary())\n",
+    "\n",
+    "cols = ['Unemployment', 'RAV4Queries']\n",
+    "VIF(car_train, cols)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Understand the Data\n",
+    "i) The linear regression equation produced by the model is RAV4Sales = -3046.6355 * Unemployment + 245.9654 * RAV4Queries. This means for every 1 unit increase in unemployment, RAV4Sales will decrease by 3046.6355; for every 1 unit increase in RAV4Queries, RAV4Sales will increase by 245.9654.\n",
+    "\n",
+    "ii) I selected my variables by first performing ordinary least squares (OLS) on the model with all 4 independent variables. I noticed that Unemployment and CPIAll had very high VIFs scores, but CPIAll had a significantly higher p-value than Unemployment. Thus I removed CPIAll and ran the analysis again. This made VIF scores for the remaining 3 independent variables less than 6, so I looked at the p-values. CPIEnergy had a p-value of 0.967, which is very high, so I removed it. Then the remaining Unemployment and RAV4Queries had VIF values less than 5, and very close to 0, which is excellent. The adjusted R^2 for this model was 0.804, which is better than the original model's adjusted R^2 of .799.\n",
+    "\n",
+    "iii) The signs of the coefficients make sense, because as unemployment increases, people have less money and won't spend as much. Thus Unemployment and RAV4Sales have an inverse relationship. It makes sense that RAV4Queries has a positive coefficient because as more people search for RAV4s, this indicates a higher demand and more people buying it.\n",
+    "\n",
+    "iv) The model is a good predictor of training set observations, as the R-square is 0.810. This is semi-close to 1, which we want.\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Part B"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "                            OLS Regression Results                            \n",
+      "==============================================================================\n",
+      "Dep. Variable:              RAV4Sales   R-squared:                       0.884\n",
+      "Model:                            OLS   Adj. R-squared:                  0.853\n",
+      "Method:                 Least Squares   F-statistic:                     28.51\n",
+      "Date:                Tue, 09 Feb 2021   Prob (F-statistic):           8.55e-21\n",
+      "Time:                        16:25:28   Log-Likelihood:                -665.48\n",
+      "No. Observations:                  72   AIC:                             1363.\n",
+      "Df Residuals:                      56   BIC:                             1399.\n",
+      "Df Model:                          15                                         \n",
+      "Covariance Type:            nonrobust                                         \n",
+      "============================================================================================\n",
+      "                               coef    std err          t      P>|t|      [0.025      0.975]\n",
+      "--------------------------------------------------------------------------------------------\n",
+      "Intercept                 7.754e+04   8.82e+04      0.879      0.383   -9.92e+04    2.54e+05\n",
+      "MonthFactor[T.August]     2422.0989   1679.828      1.442      0.155    -943.001    5787.199\n",
+      "MonthFactor[T.December]   1885.2249   1704.333      1.106      0.273   -1528.965    5299.414\n",
+      "MonthFactor[T.February]  -2922.8349   1644.025     -1.778      0.081   -6216.214     370.544\n",
+      "MonthFactor[T.January]   -4543.8071   1648.557     -2.756      0.008   -7846.264   -1241.350\n",
+      "MonthFactor[T.July]       -193.7079   1687.715     -0.115      0.909   -3574.607    3187.191\n",
+      "MonthFactor[T.June]      -1426.1733   1666.576     -0.856      0.396   -4764.726    1912.380\n",
+      "MonthFactor[T.March]       466.8540   1639.891      0.285      0.777   -2818.243    3751.951\n",
+      "MonthFactor[T.May]        2010.0694   1640.329      1.225      0.226   -1275.904    5296.043\n",
+      "MonthFactor[T.November]  -1540.1770   1687.060     -0.913      0.365   -4919.765    1839.411\n",
+      "MonthFactor[T.October]   -1808.4239   1695.135     -1.067      0.291   -5204.188    1587.340\n",
+      "MonthFactor[T.September] -1879.2594   1651.944     -1.138      0.260   -5188.501    1429.982\n",
+      "Unemployment             -3687.3648   1437.100     -2.566      0.013   -6566.223    -808.507\n",
+      "RAV4Queries                228.4423    116.205      1.966      0.054      -4.343     461.228\n",
+      "CPIAll                    -175.4430    379.958     -0.462      0.646    -936.590     585.704\n",
+      "CPIEnergy                    1.1895     40.426      0.029      0.977     -79.794      82.173\n",
+      "==============================================================================\n",
+      "Omnibus:                        7.146   Durbin-Watson:                   1.287\n",
+      "Prob(Omnibus):                  0.028   Jarque-Bera (JB):               11.806\n",
+      "Skew:                           0.206   Prob(JB):                      0.00273\n",
+      "Kurtosis:                       4.941   Cond. No.                     8.70e+04\n",
+      "==============================================================================\n",
+      "\n",
+      "Warnings:\n",
+      "[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.\n",
+      "[2] The condition number is large, 8.7e+04. This might indicate that there are\n",
+      "strong multicollinearity or other numerical problems.\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "Unemployment    37.437684\n",
+       "RAV4Queries      6.231404\n",
+       "CPIAll          28.216088\n",
+       "CPIEnergy        7.220536\n",
+       "dtype: float64"
+      ]
+     },
+     "execution_count": 16,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "import statsmodels.formula.api as smf\n",
+    "\n",
+    "ols = smf.ols(formula='RAV4Sales ~ MonthFactor + Unemployment + RAV4Queries + CPIAll + CPIEnergy', data=car_train)\n",
+    "model5 =ols.fit()\n",
+    "print(model5.summary())\n",
+    "\n",
+    "# cols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\n",
+    "# VIF(car_train, cols)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "i) The regression equation is RAV4Sales = 7.754e+04 + 2422.0989*August + 1885.2249*December + -2922.8349*February + -4543.8071*January + -193.7079*July + -1426.1733*June + 466.8540*March + 2010.0694*May + -1540.1770*November + -1808.4239*October + 1879.2594*September + -3687.3648*Unemployment + 228.4423*RAV4Queries + -175.4430*CPIAll + 1.1895*CPIEnergy\n",
+    "\n",
+    "The  coefficients  of  each  of  the $MonthFactor$ dummy variables represent that marginal impact that the specific month in the year has on the sales of the car.\n",
+    "\n",
+    "ii) The training set $R^2$ for this model is 0.884. The significant variables are Unemployment and RAV4Queries, and January, as they have the lowest p-values. The months with the greatest impact are January and February; these are the only months with p-value less than 0.05. \n",
+    "\n",
+    "iii) Yes, I think adding the independent variable $MonthFactor$ improves the model, because the $R^2$ increased by 0.074 from the previous model. Furthermore, since the p-value is less than 0.05 for January (and close to 0.05 for February), the result of the hypothesis test suggests that it is important to consider MonthFactor and hence keep it.\n",
+    "\n",
+    "iv) Since the months with the greatest impact are 2 consecutive months, another way to model seasonality could be to categorize by season, ie Winter/Spring/Summer/Fall. This would decrease the number of dummy variables and perhaps the VIF too since February sales should be similar to January sales. An additional method is to create dummy variables based on the year."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Part C\n",
+    "Build a final model using a subset of the independent variables used in parts (a) and (b), providing a brief justification for the variables selected.  What is the training setR2and theOSR2(this is theR2of your model on the test set)?  Do you think your model wouldbe useful to Toyota?  Why or why not?"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 30,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "                            OLS Regression Results                            \n",
+      "==============================================================================\n",
+      "Dep. Variable:              RAV4Sales   R-squared:                       0.721\n",
+      "Model:                            OLS   Adj. R-squared:                  0.614\n",
+      "Method:                 Least Squares   F-statistic:                     6.761\n",
+      "Date:                Tue, 09 Feb 2021   Prob (F-statistic):           3.67e-06\n",
+      "Time:                        17:16:17   Log-Likelihood:                -460.43\n",
+      "No. Observations:                  48   AIC:                             948.9\n",
+      "Df Residuals:                      34   BIC:                             975.1\n",
+      "Df Model:                          13                                         \n",
+      "Covariance Type:            nonrobust                                         \n",
+      "============================================================================================\n",
+      "                               coef    std err          t      P>|t|      [0.025      0.975]\n",
+      "--------------------------------------------------------------------------------------------\n",
+      "Intercept                 2.437e+04   3775.848      6.454      0.000    1.67e+04     3.2e+04\n",
+      "MonthFactor[T.August]     1.219e+04   3078.280      3.961      0.000    5937.552    1.84e+04\n",
+      "MonthFactor[T.December]   8488.5701   3077.293      2.758      0.009    2234.759    1.47e+04\n",
+      "MonthFactor[T.February]   -929.4137   3091.844     -0.301      0.766   -7212.797    5353.970\n",
+      "MonthFactor[T.January]   -4026.2187   3064.713     -1.314      0.198   -1.03e+04    2202.028\n",
+      "MonthFactor[T.July]       8436.8004   3079.425      2.740      0.010    2178.657    1.47e+04\n",
+      "MonthFactor[T.June]       5995.9980   3050.628      1.965      0.058    -203.625    1.22e+04\n",
+      "MonthFactor[T.March]       693.2115   3058.824      0.227      0.822   -5523.067    6909.490\n",
+      "MonthFactor[T.May]        9429.9468   2989.824      3.154      0.003    3353.894    1.55e+04\n",
+      "MonthFactor[T.November]   6040.5210   3070.234      1.967      0.057    -198.946    1.23e+04\n",
+      "MonthFactor[T.October]    5420.7413   3067.285      1.767      0.086    -812.732    1.17e+04\n",
+      "MonthFactor[T.September]  8630.4645   3055.951      2.824      0.008    2420.025    1.48e+04\n",
+      "Unemployment              -794.3023    258.249     -3.076      0.004   -1319.127    -269.477\n",
+      "RAV4Queries                136.4509     42.147      3.237      0.003      50.798     222.104\n",
+      "==============================================================================\n",
+      "Omnibus:                        0.302   Durbin-Watson:                   1.322\n",
+      "Prob(Omnibus):                  0.860   Jarque-Bera (JB):                0.484\n",
+      "Skew:                          -0.021   Prob(JB):                        0.785\n",
+      "Kurtosis:                       2.510   Cond. No.                         997.\n",
+      "==============================================================================\n",
+      "\n",
+      "Warnings:\n",
+      "[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.\n"
+     ]
+    }
+   ],
+   "source": [
+    "import statsmodels.formula.api as smf\n",
+    "\n",
+    "ols = smf.ols(formula= 'RAV4Sales ~ MonthFactor + Unemployment + RAV4Queries', data=car_test) #change to car_train\n",
+    "modelc =ols.fit()\n",
+    "print(modelc.summary())\n",
+    "\n",
+    "# cols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\n",
+    "# VIF(car_train, cols)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "My final model includes as independent variables: MonthFactor, Unemployment, RAV4Queries. I chose these because Unemployment amd RAV4Queries were the two that I decided to keep from part a, and in part b, I decided to keep MonthFactor. The training set R-square is 0.883, and the OSR-square is 0.721. I think that my model could be useful to Toyota because the OSR-square is pretty good, but not great. My model would be more useful if I had data that was more specific to this problem, like the number of visits to Toyota's RAV4 sales page or the number of pre-orders."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Part D: Aggregating my Own Data from Another Source\n",
+    "I chose to add data based on monthly car loan rates. My hypothesis is people are more likely or willing to buy cars when loan rates are low. I know from Economics that the Federal Reserve decreases interest rates when it wants to encourage people to spend and stimulate the economy, thus I predicted it could indicate spending on cars. I obtained my data from Statista (https://www.statista.com/statistics/290673/auto-loan-rates-usa/): Interest rates on auto loans in the United States from January 2014 to December 2020. \n",
+    "\n",
+    "Then I spent a long time cleaning and preparing the interest rate data before merging it with the original Toyota car sales data. I used the same independent variables as in part (c), with the addition of LoanRate. My R-square for this new model is 0.844, sligltly worse than the R-square from part (c). Additionally, the p-value for LoanRate in the training set is 0.751, which is extremely high. This suggests that it didn't add any predictive value. One thing to note however, is that the data I had only started in 2014, while the Toyota data started in 2011, so if I had access to the previous years, I could've improved the data. Furthermore, the coefficient for LoanRate is -1517.0760, which makes sense that it's negative because people buy less cars as the loan rate increases.\n",
+    "\n",
+    "Testing my model on the test set, by changing the ols code to 'data=data_test' gives an OSR-square of 0.773. This is slightly better than the OSR-square from part(c), which suggesets that having the LoanRate data for all the years in the test set improves the model. Therefore I believe that the LoanRate data adds predictive value."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 114,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>MonthNumeric</th>\n",
+       "      <th>MonthFactor</th>\n",
+       "      <th>Year</th>\n",
+       "      <th>RAV4Sales</th>\n",
+       "      <th>Unemployment</th>\n",
+       "      <th>RAV4Queries</th>\n",
+       "      <th>CPIAll</th>\n",
+       "      <th>CPIEnergy</th>\n",
+       "      <th>LoanRate</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>1</td>\n",
+       "      <td>January</td>\n",
+       "      <td>2011</td>\n",
+       "      <td>11196</td>\n",
+       "      <td>9.1</td>\n",
+       "      <td>29</td>\n",
+       "      <td>221.187</td>\n",
+       "      <td>229.258</td>\n",
+       "      <td>NaN</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>2</td>\n",
+       "      <td>February</td>\n",
+       "      <td>2011</td>\n",
+       "      <td>12562</td>\n",
+       "      <td>9.0</td>\n",
+       "      <td>29</td>\n",
+       "      <td>221.898</td>\n",
+       "      <td>232.068</td>\n",
+       "      <td>NaN</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>3</td>\n",
+       "      <td>March</td>\n",
+       "      <td>2011</td>\n",
+       "      <td>16082</td>\n",
+       "      <td>9.0</td>\n",
+       "      <td>29</td>\n",
+       "      <td>223.046</td>\n",
+       "      <td>240.079</td>\n",
+       "      <td>NaN</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>4</td>\n",
+       "      <td>April</td>\n",
+       "      <td>2011</td>\n",
+       "      <td>15586</td>\n",
+       "      <td>9.1</td>\n",
+       "      <td>27</td>\n",
+       "      <td>224.093</td>\n",
+       "      <td>247.977</td>\n",
+       "      <td>NaN</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>5</td>\n",
+       "      <td>May</td>\n",
+       "      <td>2011</td>\n",
+       "      <td>8624</td>\n",
+       "      <td>9.0</td>\n",
+       "      <td>28</td>\n",
+       "      <td>224.806</td>\n",
+       "      <td>250.744</td>\n",
+       "      <td>NaN</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>...</th>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "      <td>...</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>67</th>\n",
+       "      <td>8</td>\n",
+       "      <td>August</td>\n",
+       "      <td>2016</td>\n",
+       "      <td>33171</td>\n",
+       "      <td>4.9</td>\n",
+       "      <td>59</td>\n",
+       "      <td>240.595</td>\n",
+       "      <td>189.718</td>\n",
+       "      <td>4.18</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>68</th>\n",
+       "      <td>9</td>\n",
+       "      <td>September</td>\n",
+       "      <td>2016</td>\n",
+       "      <td>29438</td>\n",
+       "      <td>5.0</td>\n",
+       "      <td>54</td>\n",
+       "      <td>241.068</td>\n",
+       "      <td>192.158</td>\n",
+       "      <td>4.23</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>69</th>\n",
+       "      <td>10</td>\n",
+       "      <td>October</td>\n",
+       "      <td>2016</td>\n",
+       "      <td>26429</td>\n",
+       "      <td>4.9</td>\n",
+       "      <td>52</td>\n",
+       "      <td>241.641</td>\n",
+       "      <td>195.541</td>\n",
+       "      <td>4.26</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>70</th>\n",
+       "      <td>11</td>\n",
+       "      <td>November</td>\n",
+       "      <td>2016</td>\n",
+       "      <td>28116</td>\n",
+       "      <td>4.7</td>\n",
+       "      <td>48</td>\n",
+       "      <td>241.993</td>\n",
+       "      <td>195.927</td>\n",
+       "      <td>4.27</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>71</th>\n",
+       "      <td>12</td>\n",
+       "      <td>December</td>\n",
+       "      <td>2016</td>\n",
+       "      <td>37214</td>\n",
+       "      <td>4.7</td>\n",
+       "      <td>54</td>\n",
+       "      <td>242.712</td>\n",
+       "      <td>200.139</td>\n",
+       "      <td>4.32</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>72 rows × 9 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "    MonthNumeric MonthFactor  Year  RAV4Sales  Unemployment  RAV4Queries  \\\n",
+       "0              1     January  2011      11196           9.1           29   \n",
+       "1              2    February  2011      12562           9.0           29   \n",
+       "2              3       March  2011      16082           9.0           29   \n",
+       "3              4       April  2011      15586           9.1           27   \n",
+       "4              5         May  2011       8624           9.0           28   \n",
+       "..           ...         ...   ...        ...           ...          ...   \n",
+       "67             8      August  2016      33171           4.9           59   \n",
+       "68             9   September  2016      29438           5.0           54   \n",
+       "69            10     October  2016      26429           4.9           52   \n",
+       "70            11    November  2016      28116           4.7           48   \n",
+       "71            12    December  2016      37214           4.7           54   \n",
+       "\n",
+       "     CPIAll  CPIEnergy  LoanRate  \n",
+       "0   221.187    229.258       NaN  \n",
+       "1   221.898    232.068       NaN  \n",
+       "2   223.046    240.079       NaN  \n",
+       "3   224.093    247.977       NaN  \n",
+       "4   224.806    250.744       NaN  \n",
+       "..      ...        ...       ...  \n",
+       "67  240.595    189.718      4.18  \n",
+       "68  241.068    192.158      4.23  \n",
+       "69  241.641    195.541      4.26  \n",
+       "70  241.993    195.927      4.27  \n",
+       "71  242.712    200.139      4.32  \n",
+       "\n",
+       "[72 rows x 9 columns]"
+      ]
+     },
+     "execution_count": 114,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n",
+    "rate['MonthNumeric'] = pd.to_datetime(rate.MonthFactor, format='%b').dt.month\n",
+    "rate = rate.drop(columns = ['MonthFactor'])\n",
+    "data = pd.merge(car, rate, how='left', on=['Year', 'MonthNumeric'])\n",
+    "data_train = data[data['Year'] <= 2016]\n",
+    "data_test = data[data['Year'] >= 2017]\n",
+    "data_train"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 120,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "                            OLS Regression Results                            \n",
+      "==============================================================================\n",
+      "Dep. Variable:              RAV4Sales   R-squared:                       0.844\n",
+      "Model:                            OLS   Adj. R-squared:                  0.739\n",
+      "Method:                 Least Squares   F-statistic:                     8.088\n",
+      "Date:                Tue, 09 Feb 2021   Prob (F-statistic):           1.38e-05\n",
+      "Time:                        18:43:24   Log-Likelihood:                -324.33\n",
+      "No. Observations:                  36   AIC:                             678.7\n",
+      "Df Residuals:                      21   BIC:                             702.4\n",
+      "Df Model:                          14                                         \n",
+      "Covariance Type:            nonrobust                                         \n",
+      "============================================================================================\n",
+      "                               coef    std err          t      P>|t|      [0.025      0.975]\n",
+      "--------------------------------------------------------------------------------------------\n",
+      "Intercept                 3.278e+04   2.69e+04      1.218      0.237   -2.32e+04    8.88e+04\n",
+      "MonthFactor[T.August]     6386.9882   2325.741      2.746      0.012    1550.345    1.12e+04\n",
+      "MonthFactor[T.December]   5084.7512   2185.912      2.326      0.030     538.898    9630.604\n",
+      "MonthFactor[T.February]  -2898.7441   2179.588     -1.330      0.198   -7431.445    1633.957\n",
+      "MonthFactor[T.January]   -4572.8861   2149.815     -2.127      0.045   -9043.672    -102.101\n",
+      "MonthFactor[T.July]       1890.1779   2327.036      0.812      0.426   -2949.159    6729.515\n",
+      "MonthFactor[T.June]      -1307.1624   2222.131     -0.588      0.563   -5928.337    3314.012\n",
+      "MonthFactor[T.March]       878.5674   2137.964      0.411      0.685   -3567.571    5324.706\n",
+      "MonthFactor[T.May]        3999.1421   2120.673      1.886      0.073    -411.040    8409.324\n",
+      "MonthFactor[T.November]    246.1026   2204.478      0.112      0.912   -4338.361    4830.566\n",
+      "MonthFactor[T.October]       2.2264   2220.519      0.001      0.999   -4615.596    4620.049\n",
+      "MonthFactor[T.September]   647.2867   2201.389      0.294      0.772   -3930.753    5225.326\n",
+      "Unemployment             -2423.0672   1606.875     -1.508      0.146   -5764.746     918.612\n",
+      "RAV4Queries                257.6039    130.627      1.972      0.062     -14.049     529.257\n",
+      "LoanRate                 -1517.0760   4714.463     -0.322      0.751   -1.13e+04    8287.187\n",
+      "==============================================================================\n",
+      "Omnibus:                        1.654   Durbin-Watson:                   1.658\n",
+      "Prob(Omnibus):                  0.437   Jarque-Bera (JB):                0.778\n",
+      "Skew:                           0.309   Prob(JB):                        0.678\n",
+      "Kurtosis:                       3.370   Cond. No.                     2.99e+03\n",
+      "==============================================================================\n",
+      "\n",
+      "Warnings:\n",
+      "[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.\n",
+      "[2] The condition number is large, 2.99e+03. This might indicate that there are\n",
+      "strong multicollinearity or other numerical problems.\n"
+     ]
+    }
+   ],
+   "source": [
+    "model2 = smf.ols(formula='RAV4Sales ~ MonthFactor + Unemployment + RAV4Queries + LoanRate', data=data_train).fit()\n",
+    "print(model2.summary())\n",
+    "\n",
+    "# cols = ['Unemployment', 'RAV4Queries']\n",
+    "# VIF(data_train, cols)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "history": [
+   {
+    "code": "import numpy as pd\nimport numpy as np",
+    "id": "bc407a1c458742a38808ff5c5d7d0d9a",
+    "idx": 0,
+    "time": "2021-02-04T05:50:31.238Z",
+    "type": "execution"
+   },
+   {
+    "id": "bc407a1c458742a38808ff5c5d7d0d9a",
+    "time": "2021-02-04T05:50:31.488Z",
+    "type": "completion"
+   },
+   {
+    "code": "car = pd.read_csv('RAV4-142-Spring2021.csv')\ncar",
+    "id": "e8a737000de54e4885d4638079e5285c",
+    "idx": 1,
+    "time": "2021-02-04T05:50:32.491Z",
+    "type": "execution"
+   },
+   {
+    "id": "e8a737000de54e4885d4638079e5285c",
+    "time": "2021-02-04T05:50:32.637Z",
+    "type": "completion"
+   },
+   {
+    "code": "import numpy as pd\nimport pandas as np",
+    "id": "bc407a1c458742a38808ff5c5d7d0d9a",
+    "idx": 0,
+    "time": "2021-02-04T05:50:52.205Z",
+    "type": "execution"
+   },
+   {
+    "id": "bc407a1c458742a38808ff5c5d7d0d9a",
+    "time": "2021-02-04T05:50:52.585Z",
+    "type": "completion"
+   },
+   {
+    "code": "car = pd.read_csv('RAV4-142-Spring2021.csv')\ncar",
+    "id": "e8a737000de54e4885d4638079e5285c",
+    "idx": 1,
+    "time": "2021-02-04T05:50:52.849Z",
+    "type": "execution"
+   },
+   {
+    "id": "e8a737000de54e4885d4638079e5285c",
+    "time": "2021-02-04T05:50:52.943Z",
+    "type": "completion"
+   },
+   {
+    "code": "import numpy as np\nimport pandas as pd",
+    "id": "bc407a1c458742a38808ff5c5d7d0d9a",
+    "idx": 0,
+    "time": "2021-02-04T05:51:06.393Z",
+    "type": "execution"
+   },
+   {
+    "id": "bc407a1c458742a38808ff5c5d7d0d9a",
+    "time": "2021-02-04T05:51:06.461Z",
+    "type": "completion"
+   },
+   {
+    "code": "car = pd.read_csv('RAV4-142-Spring2021.csv')\ncar",
+    "id": "e8a737000de54e4885d4638079e5285c",
+    "idx": 1,
+    "time": "2021-02-04T05:51:08.833Z",
+    "type": "execution"
+   },
+   {
+    "id": "e8a737000de54e4885d4638079e5285c",
+    "time": "2021-02-04T05:51:08.958Z",
+    "type": "completion"
+   },
+   {
+    "code": "car = pd.read_csv('RAV4-142-Spring2021.csv')\ncar.head",
+    "id": "e8a737000de54e4885d4638079e5285c",
+    "idx": 1,
+    "time": "2021-02-04T05:51:19.930Z",
+    "type": "execution"
+   },
+   {
+    "id": "e8a737000de54e4885d4638079e5285c",
+    "time": "2021-02-04T05:51:20.021Z",
+    "type": "completion"
+   },
+   {
+    "code": "car = pd.read_csv('RAV4-142-Spring2021.csv')\ncar",
+    "id": "e8a737000de54e4885d4638079e5285c",
+    "idx": 1,
+    "time": "2021-02-04T05:51:25.865Z",
+    "type": "execution"
+   },
+   {
+    "id": "e8a737000de54e4885d4638079e5285c",
+    "time": "2021-02-04T05:51:25.969Z",
+    "type": "completion"
+   },
+   {
+    "code": "car = pd.read_csv('RAV4-142-Spring2021.csv')\ncar.head()",
+    "id": "e8a737000de54e4885d4638079e5285c",
+    "idx": 1,
+    "time": "2021-02-04T05:51:33.467Z",
+    "type": "execution"
+   },
+   {
+    "id": "e8a737000de54e4885d4638079e5285c",
+    "time": "2021-02-04T05:51:33.555Z",
+    "type": "completion"
+   },
+   {
+    "code": "car = pd.read_csv('RAV4-142-Spring2021.csv')\ncar.head",
+    "id": "e8a737000de54e4885d4638079e5285c",
+    "idx": 1,
+    "time": "2021-02-04T05:51:38.035Z",
+    "type": "execution"
+   },
+   {
+    "id": "e8a737000de54e4885d4638079e5285c",
+    "time": "2021-02-04T05:51:38.115Z",
+    "type": "completion"
+   },
+   {
+    "code": "car = pd.read_csv('RAV4-142-Spring2021.csv')\ncar",
+    "id": "e8a737000de54e4885d4638079e5285c",
+    "idx": 1,
+    "time": "2021-02-04T05:51:41.281Z",
+    "type": "execution"
+   },
+   {
+    "id": "e8a737000de54e4885d4638079e5285c",
+    "time": "2021-02-04T05:51:41.383Z",
+    "type": "completion"
+   },
+   {
+    "code": "car_train = car[car['Year']<2016]",
+    "id": "cd9d96e2c4f5476891a93662f40665a0",
+    "idx": 2,
+    "time": "2021-02-04T05:53:11.203Z",
+    "type": "execution"
+   },
+   {
+    "id": "cd9d96e2c4f5476891a93662f40665a0",
+    "time": "2021-02-04T05:53:11.282Z",
+    "type": "completion"
+   },
+   {
+    "code": "car_train = car[car['Year'] =< 2016]\ncar_test = car[car['Year'] > 2017]\ncar_train",
+    "id": "cd9d96e2c4f5476891a93662f40665a0",
+    "idx": 2,
+    "time": "2021-02-04T05:53:53.898Z",
+    "type": "execution"
+   },
+   {
+    "id": "cd9d96e2c4f5476891a93662f40665a0",
+    "time": "2021-02-04T05:53:53.975Z",
+    "type": "completion"
+   },
+   {
+    "code": "car_train = car[car['Year'] <= 2016]\ncar_test = car[car['Year'] > 2017]\ncar_train",
+    "id": "cd9d96e2c4f5476891a93662f40665a0",
+    "idx": 2,
+    "time": "2021-02-04T05:54:05.379Z",
+    "type": "execution"
+   },
+   {
+    "id": "cd9d96e2c4f5476891a93662f40665a0",
+    "time": "2021-02-04T05:54:05.484Z",
+    "type": "completion"
+   },
+   {
+    "code": "car_train = car[car['Year'] <= 2016]\ncar_test = car[car['Year'] > 2017]\ncar_test",
+    "id": "cd9d96e2c4f5476891a93662f40665a0",
+    "idx": 2,
+    "time": "2021-02-04T05:54:25.223Z",
+    "type": "execution"
+   },
+   {
+    "id": "cd9d96e2c4f5476891a93662f40665a0",
+    "time": "2021-02-04T05:54:25.393Z",
+    "type": "completion"
+   },
+   {
+    "code": "car_train = car[car['Year'] <= 2016]\ncar_test = car[car['Year'] > 2017]\ncar_train",
+    "id": "cd9d96e2c4f5476891a93662f40665a0",
+    "idx": 2,
+    "time": "2021-02-04T05:54:43.162Z",
+    "type": "execution"
+   },
+   {
+    "id": "cd9d96e2c4f5476891a93662f40665a0",
+    "time": "2021-02-04T05:54:43.251Z",
+    "type": "completion"
+   },
+   {
+    "code": "car_train = car[car['Year'] <= 2016]\ncar_test = car[car['Year'] >= 2017]\ncar_train",
+    "id": "cd9d96e2c4f5476891a93662f40665a0",
+    "idx": 2,
+    "time": "2021-02-04T05:54:51.285Z",
+    "type": "execution"
+   },
+   {
+    "id": "cd9d96e2c4f5476891a93662f40665a0",
+    "time": "2021-02-04T05:54:51.386Z",
+    "type": "completion"
+   },
+   {
+    "code": "car_train = car[car['Year'] <= 2016]\ncar_test = car[car['Year'] >= 2017]\ncar_test",
+    "id": "cd9d96e2c4f5476891a93662f40665a0",
+    "idx": 2,
+    "time": "2021-02-04T05:54:54.952Z",
+    "type": "execution"
+   },
+   {
+    "id": "cd9d96e2c4f5476891a93662f40665a0",
+    "time": "2021-02-04T05:54:55.129Z",
+    "type": "completion"
+   },
+   {
+    "code": "car_train = car[car['Year'] <= 2016]\ncar_test = car[car['Year'] >= 2017]\n",
+    "id": "cd9d96e2c4f5476891a93662f40665a0",
+    "idx": 2,
+    "time": "2021-02-04T05:56:37.071Z",
+    "type": "execution"
+   },
+   {
+    "id": "cd9d96e2c4f5476891a93662f40665a0",
+    "time": "2021-02-04T05:56:37.143Z",
+    "type": "completion"
+   },
+   {
+    "code": "import statsmodels.formula.api as smf\n\nols = smf.ols(formula='Rav4Sales ~ Unemployment + RAV4Queries + CPIAll + CPIEnergy', data=car_train)\nmodel1 =ols.fit()\nprint(model1.summary())",
+    "id": "2387a010b2e74be5b3df1fda760e5259",
+    "idx": 4,
+    "time": "2021-02-04T05:58:07.856Z",
+    "type": "execution"
+   },
+   {
+    "id": "2387a010b2e74be5b3df1fda760e5259",
+    "time": "2021-02-04T05:58:08.487Z",
+    "type": "completion"
+   },
+   {
+    "code": "import statsmodels.formula.api as smf\n\nols = smf.ols(formula='RAV4Sales ~ Unemployment + RAV4Queries + CPIAll + CPIEnergy', data=car_train)\nmodel1 =ols.fit()\nprint(model1.summary())",
+    "id": "2387a010b2e74be5b3df1fda760e5259",
+    "idx": 4,
+    "time": "2021-02-04T05:58:42.453Z",
+    "type": "execution"
+   },
+   {
+    "id": "2387a010b2e74be5b3df1fda760e5259",
+    "time": "2021-02-04T05:58:42.561Z",
+    "type": "completion"
+   },
+   {
+    "code": "# calculate Variance Inflation Factor for each explanatory variable\nfrom statsmodels.stats.outliers_influence import variance_inflation_factor\n\n# The dataframe passed to VIF must include the intercept term. We add it the same way we did before.\ndef VIF(df, columns):\n    values = sm.add_constant(df[columns]).values\n    num_columns = len(columns)+1\n    vif = [variance_inflation_factor(values, i) for i in range(num_columns)]\n    return pd.Series(vif[1:], index=columns)\n\ncols = ['Unemployment, 'RAV4Queries', 'CPIAll', 'CPIEnergy']\nVIF(wine_train, cols)",
+    "id": "bd56428a99f94ac48c68404a55000ab8",
+    "idx": 5,
+    "time": "2021-02-04T06:04:38.884Z",
+    "type": "execution"
+   },
+   {
+    "id": "bd56428a99f94ac48c68404a55000ab8",
+    "time": "2021-02-04T06:04:38.961Z",
+    "type": "completion"
+   },
+   {
+    "code": "# calculate Variance Inflation Factor for each explanatory variable\nfrom statsmodels.stats.outliers_influence import variance_inflation_factor\n\n# The dataframe passed to VIF must include the intercept term. We add it the same way we did before.\ndef VIF(df, columns):\n    values = sm.add_constant(df[columns]).values\n    num_columns = len(columns)+1\n    vif = [variance_inflation_factor(values, i) for i in range(num_columns)]\n    return pd.Series(vif[1:], index=columns)\n\ncols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\nVIF(wine_train, cols)",
+    "id": "bd56428a99f94ac48c68404a55000ab8",
+    "idx": 5,
+    "time": "2021-02-04T06:04:45.713Z",
+    "type": "execution"
+   },
+   {
+    "id": "bd56428a99f94ac48c68404a55000ab8",
+    "time": "2021-02-04T06:04:45.791Z",
+    "type": "completion"
+   },
+   {
+    "code": "# calculate Variance Inflation Factor for each explanatory variable\nfrom statsmodels.stats.outliers_influence import variance_inflation_factor\n\n# The dataframe passed to VIF must include the intercept term. We add it the same way we did before.\ndef VIF(df, columns):\n    values = sm.add_constant(df[columns]).values\n    num_columns = len(columns)+1\n    vif = [variance_inflation_factor(values, i) for i in range(num_columns)]\n    return pd.Series(vif[1:], index=columns)\n\ncols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\nVIF(car_train, cols)",
+    "id": "bd56428a99f94ac48c68404a55000ab8",
+    "idx": 5,
+    "time": "2021-02-04T06:04:51.223Z",
+    "type": "execution"
+   },
+   {
+    "id": "bd56428a99f94ac48c68404a55000ab8",
+    "time": "2021-02-04T06:04:51.314Z",
+    "type": "completion"
+   },
+   {
+    "code": "# MATRIX STYLE TRAINING \n# Import the library that contains all the functions/modules related to the regression model\nimport statsmodels.api as sm\n\n# Choose the features to be used\ncols = [Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\nX_train = car_train[cols]\ny_train = car_train['RAV4Sales']\n\n# We must add an intercept as the standard model doesn't automatically fit one\nX_train = sm.add_constant(X_train)\n\n# Fit the data to the model\nmodel1 = sm.OLS(y_train, X_train).fit()\nprint(model1.summary())",
+    "id": "4eae1a3f22b649bc9571522d1e8f794d",
+    "idx": 5,
+    "time": "2021-02-04T06:06:31.844Z",
+    "type": "execution"
+   },
+   {
+    "id": "4eae1a3f22b649bc9571522d1e8f794d",
+    "time": "2021-02-04T06:06:31.911Z",
+    "type": "completion"
+   },
+   {
+    "code": "# MATRIX STYLE TRAINING \n# Import the library that contains all the functions/modules related to the regression model\nimport statsmodels.api as sm\n\n# Choose the features to be used\ncols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\nX_train = car_train[cols]\ny_train = car_train['RAV4Sales']\n\n# We must add an intercept as the standard model doesn't automatically fit one\nX_train = sm.add_constant(X_train)\n\n# Fit the data to the model\nmodel1 = sm.OLS(y_train, X_train).fit()\nprint(model1.summary())",
+    "id": "4eae1a3f22b649bc9571522d1e8f794d",
+    "idx": 5,
+    "time": "2021-02-04T06:06:36.683Z",
+    "type": "execution"
+   },
+   {
+    "id": "4eae1a3f22b649bc9571522d1e8f794d",
+    "time": "2021-02-04T06:06:36.968Z",
+    "type": "completion"
+   },
+   {
+    "code": "# calculate Variance Inflation Factor for each explanatory variable\nfrom statsmodels.stats.outliers_influence import variance_inflation_factor\n\n# The dataframe passed to VIF must include the intercept term. We add it the same way we did before.\ndef VIF(df, columns):\n    values = sm.add_constant(df[columns]).values\n    num_columns = len(columns)+1\n    vif = [variance_inflation_factor(values, i) for i in range(num_columns)]\n    return pd.Series(vif[1:], index=columns)\n\ncols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\nVIF(car_train, cols)",
+    "id": "bd56428a99f94ac48c68404a55000ab8",
+    "idx": 6,
+    "time": "2021-02-04T06:06:40.753Z",
+    "type": "execution"
+   },
+   {
+    "id": "bd56428a99f94ac48c68404a55000ab8",
+    "time": "2021-02-04T06:06:40.850Z",
+    "type": "completion"
+   },
+   {
+    "code": "# MATRIX STYLE TRAINING \n# Import the library that contains all the functions/modules related to the regression model\nimport statsmodels.api as sm\n\n# Choose the features to be used\ncols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\nX_train = car_train[cols]\ny_train = car_train['RAV4Sales']\n\n# We must add an intercept as the standard model doesn't automatically fit one\nX_train = sm.add_constant(X_train)\n\n# Fit the data to the model\nmodel1 = sm.OLS(y_train, X_train).fit()\nprint(model1.summary())",
+    "id": "4eae1a3f22b649bc9571522d1e8f794d",
+    "idx": 5,
+    "time": "2021-02-04T06:07:35.368Z",
+    "type": "execution"
+   },
+   {
+    "id": "4eae1a3f22b649bc9571522d1e8f794d",
+    "time": "2021-02-04T06:07:35.460Z",
+    "type": "completion"
+   },
+   {
+    "code": "# remove CPIEnergy\nmodel2 = smf.ols(formula='RAV4Sales ~ Unemployment + RAV4Queries + CPIAll', data=car_train).fit()\nprint(model3.summary())\n\ncols = ['Unemployment', 'RAV4Queries', 'CPIAll']\nVIF(car_train, cols)",
+    "id": "dc3abe45440f4bef82972e03ede2eea5",
+    "idx": 7,
+    "time": "2021-02-04T06:21:25.152Z",
+    "type": "execution"
+   },
+   {
+    "id": "dc3abe45440f4bef82972e03ede2eea5",
+    "time": "2021-02-04T06:21:25.277Z",
+    "type": "completion"
+   },
+   {
+    "code": "# remove CPIEnergy\nmodel2 = smf.ols(formula='RAV4Sales ~ Unemployment + RAV4Queries + CPIAll', data=car_train).fit()\nprint(model2.summary())\n\ncols = ['Unemployment', 'RAV4Queries', 'CPIAll']\nVIF(car_train, cols)",
+    "id": "dc3abe45440f4bef82972e03ede2eea5",
+    "idx": 7,
+    "time": "2021-02-04T06:21:29.546Z",
+    "type": "execution"
+   },
+   {
+    "id": "dc3abe45440f4bef82972e03ede2eea5",
+    "time": "2021-02-04T06:21:29.668Z",
+    "type": "completion"
+   },
+   {
+    "code": "# MATRIX STYLE TRAINING \n# Import the library that contains all the functions/modules related to the regression model\nimport statsmodels.api as sm\n\n# Choose the features to be used\ncols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\nX_train = car_train[cols]\ny_train = car_train['RAV4Sales']\n\n# We must add an intercept as the standard model doesn't automatically fit one\nX_train = sm.add_constant(X_train)\n\n# Fit the data to the model\nmodel1 = sm.OLS(y_train, X_train).fit()\nprint(model1.summary())",
+    "id": "4eae1a3f22b649bc9571522d1e8f794d",
+    "idx": 5,
+    "time": "2021-02-04T06:22:14.509Z",
+    "type": "execution"
+   },
+   {
+    "id": "4eae1a3f22b649bc9571522d1e8f794d",
+    "time": "2021-02-04T06:22:14.606Z",
+    "type": "completion"
+   },
+   {
+    "code": "# remove CPIAll\nmodel3 = smf.ols(formula='RAV4Sales ~ Unemployment + RAV4Queries', data=car_train).fit()\nprint(model3.summary())\n\ncols = ['Unemployment', 'RAV4Queries']\nVIF(car_train, cols)",
+    "id": "0e7cd1eab077466e82cda504fc8b0f68",
+    "idx": 8,
+    "time": "2021-02-04T06:23:23.128Z",
+    "type": "execution"
+   },
+   {
+    "id": "0e7cd1eab077466e82cda504fc8b0f68",
+    "time": "2021-02-04T06:23:23.231Z",
+    "type": "completion"
+   },
+   {
+    "code": "# remove CPIAll\nmodel3 = smf.ols(formula='RAV4Sales ~ Unemployment + RAV4Queries + CPIEnergy', data=car_train).fit()\nprint(model3.summary())\n\ncols = ['Unemployment', 'RAV4Queries', 'CPIEnergy']\nVIF(car_train, cols)",
+    "id": "0e7cd1eab077466e82cda504fc8b0f68",
+    "idx": 8,
+    "time": "2021-02-04T06:24:33.355Z",
+    "type": "execution"
+   },
+   {
+    "id": "0e7cd1eab077466e82cda504fc8b0f68",
+    "time": "2021-02-04T06:24:33.466Z",
+    "type": "completion"
+   },
+   {
+    "code": "# remove CPIAll\nmodel3 = smf.ols(formula='RAV4Sales ~ RAV4Queries + CPIEnergy', data=car_train).fit()\nprint(model3.summary())\n\ncols = ['RAV4Queries', 'CPIEnergy']\nVIF(car_train, cols)",
+    "id": "0e7cd1eab077466e82cda504fc8b0f68",
+    "idx": 8,
+    "time": "2021-02-04T06:24:52.952Z",
+    "type": "execution"
+   },
+   {
+    "id": "0e7cd1eab077466e82cda504fc8b0f68",
+    "time": "2021-02-04T06:24:53.045Z",
+    "type": "completion"
+   },
+   {
+    "code": "# remove CPIAll\nmodel3 = smf.ols(formula='RAV4Sales ~ RAV4Queries + CPIAll + CPIEnergy', data=car_train).fit()\nprint(model3.summary())\n\ncols = ['RAV4Queries', 'CPIAll', 'CPIEnergy']\nVIF(car_train, cols)",
+    "id": "0e7cd1eab077466e82cda504fc8b0f68",
+    "idx": 8,
+    "time": "2021-02-04T06:25:33.813Z",
+    "type": "execution"
+   },
+   {
+    "id": "0e7cd1eab077466e82cda504fc8b0f68",
+    "time": "2021-02-04T06:25:33.922Z",
+    "type": "completion"
+   },
+   {
+    "code": "# remove CPIEnergy\nmodel2 = smf.ols(formula='RAV4Sales ~ Unemployment + RAV4Queries, data=car_train).fit()\nprint(model2.summary())\n\ncols = ['Unemployment', 'RAV4Queries']\nVIF(car_train, cols)",
+    "id": "64ca449f005d4108a7187c279b8fef5e",
+    "idx": 8,
+    "time": "2021-02-04T06:26:52.579Z",
+    "type": "execution"
+   },
+   {
+    "id": "64ca449f005d4108a7187c279b8fef5e",
+    "time": "2021-02-04T06:26:52.843Z",
+    "type": "completion"
+   },
+   {
+    "code": "# remove CPIEnergy\nmodel2 = smf.ols(formula='RAV4Sales ~ Unemployment + RAV4Queries', data=car_train).fit()\nprint(model2.summary())\n\ncols = ['Unemployment', 'RAV4Queries']\nVIF(car_train, cols)",
+    "id": "64ca449f005d4108a7187c279b8fef5e",
+    "idx": 8,
+    "time": "2021-02-04T06:27:04.276Z",
+    "type": "execution"
+   },
+   {
+    "id": "64ca449f005d4108a7187c279b8fef5e",
+    "time": "2021-02-04T06:27:04.383Z",
+    "type": "completion"
+   },
+   {
+    "code": "# remove CPIEnergy\nmodel2 = smf.ols(formula='RAV4Sales ~ Unemployment + RAV4Queries + CPIAll', data=car_train).fit()\nprint(model2.summary())\n\ncols = ['Unemployment', 'RAV4Queries', 'CPIAll']\nVIF(car_train, cols)",
+    "id": "dc3abe45440f4bef82972e03ede2eea5",
+    "idx": 7,
+    "time": "2021-02-04T06:28:09.997Z",
+    "type": "execution"
+   },
+   {
+    "id": "dc3abe45440f4bef82972e03ede2eea5",
+    "time": "2021-02-04T06:28:10.093Z",
+    "type": "completion"
+   },
+   {
+    "code": "# remove RAV4Queries\nmodel2 = smf.ols(formula='RAV4Sales ~ Unemployment + CPIAll + CPIEnergy', data=car_train).fit()\nprint(model2.summary())\n\ncols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\nVIF(car_train, cols)",
+    "id": "7db1c041cf22429b8b5eb818785632c9",
+    "idx": 8,
+    "time": "2021-02-04T06:38:50.881Z",
+    "type": "execution"
+   },
+   {
+    "id": "7db1c041cf22429b8b5eb818785632c9",
+    "time": "2021-02-04T06:38:50.982Z",
+    "type": "completion"
+   },
+   {
+    "code": "# remove RAV4Queries\nmodel2 = smf.ols(formula='RAV4Sales ~  CPIAll + CPIEnergy', data=car_train).fit()\nprint(model2.summary())\n\ncols = ['CPIAll', 'CPIEnergy']\nVIF(car_train, cols)",
+    "id": "7db1c041cf22429b8b5eb818785632c9",
+    "idx": 8,
+    "time": "2021-02-04T06:39:43.043Z",
+    "type": "execution"
+   },
+   {
+    "id": "7db1c041cf22429b8b5eb818785632c9",
+    "time": "2021-02-04T06:39:43.138Z",
+    "type": "completion"
+   },
+   {
+    "code": "### Part B",
+    "id": "c6db615d53924c459c9e7435c728f949",
+    "idx": 11,
+    "time": "2021-02-04T06:42:05.490Z",
+    "type": "execution"
+   },
+   {
+    "id": "c6db615d53924c459c9e7435c728f949",
+    "time": "2021-02-04T06:42:05.563Z",
+    "type": "completion"
+   },
+   {
+    "code": "import statsmodels.formula.api as smf\n\nols = smf.ols(formula='RAV4Sales ~ MonthFactor + Unemployment + RAV4Queries + CPIAll + CPIEnergy', data=car_train)\nmodel5 =ols.fit()\nprint(model5.summary())",
+    "id": "090646cf52534726aacb6b3fa2e72a16",
+    "idx": 12,
+    "time": "2021-02-04T06:43:38.206Z",
+    "type": "execution"
+   },
+   {
+    "id": "090646cf52534726aacb6b3fa2e72a16",
+    "time": "2021-02-04T06:43:38.302Z",
+    "type": "completion"
+   },
+   {
+    "code": "a) What is the regression equation?",
+    "id": "e10fc3bb138c431280ad6a951f628d86",
+    "idx": 13,
+    "time": "2021-02-04T06:46:03.195Z",
+    "type": "execution"
+   },
+   {
+    "id": "e10fc3bb138c431280ad6a951f628d86",
+    "time": "2021-02-04T06:46:03.313Z",
+    "type": "completion"
+   },
+   {
+    "code": "import statsmodels.formula.api as smf\n\nols = smf.ols(formula='RAV4Sales ~ MonthNumeric + Unemployment + RAV4Queries + CPIAll + CPIEnergy', data=car_train)\nmodel5 =ols.fit()\nprint(model5.summary())",
+    "id": "090646cf52534726aacb6b3fa2e72a16",
+    "idx": 12,
+    "time": "2021-02-04T07:03:21.856Z",
+    "type": "execution"
+   },
+   {
+    "id": "090646cf52534726aacb6b3fa2e72a16",
+    "time": "2021-02-04T07:03:21.948Z",
+    "type": "completion"
+   },
+   {
+    "code": "import statsmodels.formula.api as smf\n\nols = smf.ols(formula='RAV4Sales ~ MonthFactor + Unemployment + RAV4Queries + CPIAll + CPIEnergy', data=car_train)\nmodel5 =ols.fit()\nprint(model5.summary())",
+    "id": "090646cf52534726aacb6b3fa2e72a16",
+    "idx": 12,
+    "time": "2021-02-04T07:04:12.810Z",
+    "type": "execution"
+   },
+   {
+    "id": "090646cf52534726aacb6b3fa2e72a16",
+    "time": "2021-02-04T07:04:12.918Z",
+    "type": "completion"
+   },
+   {
+    "code": "import statsmodels.formula.api as smf\n\nols = smf.ols(formula='RAV4Sales ~ MonthNumeric + Unemployment + RAV4Queries + CPIAll + CPIEnergy', data=car_train)\nmodel5 =ols.fit()\nprint(model5.summary())",
+    "id": "090646cf52534726aacb6b3fa2e72a16",
+    "idx": 12,
+    "time": "2021-02-04T07:04:27.326Z",
+    "type": "execution"
+   },
+   {
+    "id": "090646cf52534726aacb6b3fa2e72a16",
+    "time": "2021-02-04T07:04:27.430Z",
+    "type": "completion"
+   },
+   {
+    "code": "import numpy as np\nimport pandas as pd",
+    "id": "4fdb070563404ff8a5153ff8544733cc",
+    "idx": 0,
+    "time": "2021-02-09T23:56:21.900Z",
+    "type": "execution"
+   },
+   {
+    "code": "car = pd.read_csv('RAV4-142-Spring2021.csv')\ncar",
+    "id": "35c56d9a2a244983af06c59a731eb663",
+    "idx": 1,
+    "time": "2021-02-09T23:56:21.904Z",
+    "type": "execution"
+   },
+   {
+    "code": "car_train = car[car['Year'] <= 2016]\ncar_test = car[car['Year'] >= 2017]\ncar_test;",
+    "id": "77c3eee9d9d743fbbee569e4d2750411",
+    "idx": 3,
+    "time": "2021-02-09T23:56:21.907Z",
+    "type": "execution"
+   },
+   {
+    "code": "import statsmodels.formula.api as smf\n\nols = smf.ols(formula='RAV4Sales ~ Unemployment + RAV4Queries + CPIAll + CPIEnergy', data=car_train)\nmodel1 =ols.fit()\nprint(model1.summary())",
+    "id": "54037f5b41884e8c92be014d6ed09fc6",
+    "idx": 5,
+    "time": "2021-02-09T23:56:21.909Z",
+    "type": "execution"
+   },
+   {
+    "code": "# MATRIX STYLE TRAINING \n# Import the library that contains all the functions/modules related to the regression model\nimport statsmodels.api as sm\n\n# Choose the features to be used\ncols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\nX_train = car_train[cols]\ny_train = car_train['RAV4Sales']\n\n# We must add an intercept as the standard model doesn't automatically fit one\nX_train = sm.add_constant(X_train)\n\n# Fit the data to the model\nmodel1 = sm.OLS(y_train, X_train).fit()\nprint(model1.summary())",
+    "id": "32f8e000a70344b99f54c5ea69422248",
+    "idx": 6,
+    "time": "2021-02-09T23:56:21.911Z",
+    "type": "execution"
+   },
+   {
+    "id": "4fdb070563404ff8a5153ff8544733cc",
+    "time": "2021-02-09T23:56:22.338Z",
+    "type": "completion"
+   },
+   {
+    "id": "35c56d9a2a244983af06c59a731eb663",
+    "time": "2021-02-09T23:56:22.389Z",
+    "type": "completion"
+   },
+   {
+    "id": "77c3eee9d9d743fbbee569e4d2750411",
+    "time": "2021-02-09T23:56:22.398Z",
+    "type": "completion"
+   },
+   {
+    "id": "54037f5b41884e8c92be014d6ed09fc6",
+    "time": "2021-02-09T23:56:22.941Z",
+    "type": "completion"
+   },
+   {
+    "id": "32f8e000a70344b99f54c5ea69422248",
+    "time": "2021-02-09T23:56:23.079Z",
+    "type": "completion"
+   },
+   {
+    "code": "# calculate Variance Inflation Factor for each explanatory variable\nfrom statsmodels.stats.outliers_influence import variance_inflation_factor\n\n# The dataframe passed to VIF must include the intercept term. We add it the same way we did before.\ndef VIF(df, columns):\n    values = sm.add_constant(df[columns]).values\n    num_columns = len(columns)+1\n    vif = [variance_inflation_factor(values, i) for i in range(num_columns)]\n    return pd.Series(vif[1:], index=columns)\n\ncols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\nVIF(car_train, cols)",
+    "id": "f045348cf2f64986808b1ec388254a78",
+    "idx": 7,
+    "time": "2021-02-09T23:56:51.265Z",
+    "type": "execution"
+   },
+   {
+    "id": "f045348cf2f64986808b1ec388254a78",
+    "time": "2021-02-09T23:56:51.348Z",
+    "type": "completion"
+   },
+   {
+    "code": "# remove unemployment\nmodel3 = smf.ols(formula='RAV4Sales ~ RAV4Queries + CPIAll + CPIEnergy', data=car_train).fit()\nprint(model3.summary())\n\ncols = ['RAV4Queries', 'CPIAll', 'CPIEnergy']\nVIF(car_train, cols)",
+    "id": "48bafb6a96294d82a9a39777a7ff7981",
+    "idx": 8,
+    "time": "2021-02-09T23:57:27.930Z",
+    "type": "execution"
+   },
+   {
+    "id": "48bafb6a96294d82a9a39777a7ff7981",
+    "time": "2021-02-09T23:57:28.036Z",
+    "type": "completion"
+   },
+   {
+    "code": "# remove CPIAll from original\nmodel2 = smf.ols(formula='RAV4Sales ~ Unemployment + RAV4Queries + CPIEnergy', data=car_train).fit()\nprint(model2.summary())\n\ncols = ['Unemployment', 'RAV4Queries', 'CPIEnergy']\nVIF(car_train, cols)",
+    "id": "7305f23b523443fa96f3149d963d6f10",
+    "idx": 10,
+    "time": "2021-02-09T23:59:37.606Z",
+    "type": "execution"
+   },
+   {
+    "id": "7305f23b523443fa96f3149d963d6f10",
+    "time": "2021-02-09T23:59:37.733Z",
+    "type": "completion"
+   },
+   {
+    "code": "# remove CPIEnergy\nmodel2 = smf.ols(formula='RAV4Sales ~ Unemployment + RAV4Queries', data=car_train).fit()\nprint(model2.summary())\n\ncols = ['Unemployment', 'RAV4Queries']\nVIF(car_train, cols)",
+    "id": "92add31510904cac88b872d696d93ba0",
+    "idx": 11,
+    "time": "2021-02-10T00:00:33.576Z",
+    "type": "execution"
+   },
+   {
+    "id": "92add31510904cac88b872d696d93ba0",
+    "time": "2021-02-10T00:00:33.704Z",
+    "type": "completion"
+   },
+   {
+    "code": "# remove CPIAll from original\nmodel2 = smf.ols(formula='RAV4Sales ~ Unemployment + RAV4Queries + CPIEnergy', data=car_train).fit()\nprint(model2.summary())\n\ncols = ['Unemployment', 'RAV4Queries', 'CPIEnergy']\nVIF(car_train, cols)",
+    "id": "7305f23b523443fa96f3149d963d6f10",
+    "idx": 10,
+    "time": "2021-02-10T00:10:03.509Z",
+    "type": "execution"
+   },
+   {
+    "id": "7305f23b523443fa96f3149d963d6f10",
+    "time": "2021-02-10T00:10:03.624Z",
+    "type": "completion"
+   },
+   {
+    "code": "# remove CPIEnergy\nmodel2 = smf.ols(formula='RAV4Sales ~ Unemployment + RAV4Queries', data=car_train).fit()\nprint(model2.summary())\n\ncols = ['Unemployment', 'RAV4Queries']\nVIF(car_train, cols)",
+    "id": "92add31510904cac88b872d696d93ba0",
+    "idx": 11,
+    "time": "2021-02-10T00:11:29.946Z",
+    "type": "execution"
+   },
+   {
+    "id": "92add31510904cac88b872d696d93ba0",
+    "time": "2021-02-10T00:11:30.272Z",
+    "type": "completion"
+   },
+   {
+    "code": "car_train = car[car['Year'] <= 2016]\ncar_test = car[car['Year'] >= 2017]\ncar_test",
+    "id": "77c3eee9d9d743fbbee569e4d2750411",
+    "idx": 3,
+    "time": "2021-02-10T00:19:23.353Z",
+    "type": "execution"
+   },
+   {
+    "id": "77c3eee9d9d743fbbee569e4d2750411",
+    "time": "2021-02-10T00:19:23.579Z",
+    "type": "completion"
+   },
+   {
+    "code": "car_train = car[car['Year'] <= 2016]\ncar_test = car[car['Year'] >= 2017]\ncar_test;",
+    "id": "77c3eee9d9d743fbbee569e4d2750411",
+    "idx": 3,
+    "time": "2021-02-10T00:19:34.142Z",
+    "type": "execution"
+   },
+   {
+    "id": "77c3eee9d9d743fbbee569e4d2750411",
+    "time": "2021-02-10T00:19:38.993Z",
+    "type": "completion"
+   },
+   {
+    "code": "import statsmodels.formula.api as smf\n\nols = smf.ols(formula='RAV4Sales ~ MonthFactor + Unemployment + RAV4Queries + CPIAll + CPIEnergy', data=car_train)\nmodel5 =ols.fit()\nprint(model5.summary())",
+    "id": "746440c89fd342129c434a402e9e9c6d",
+    "idx": 14,
+    "time": "2021-02-10T00:21:47.685Z",
+    "type": "execution"
+   },
+   {
+    "id": "746440c89fd342129c434a402e9e9c6d",
+    "time": "2021-02-10T00:21:47.808Z",
+    "type": "completion"
+   },
+   {
+    "code": "import statsmodels.formula.api as smf\n\nols = smf.ols(formula='RAV4Sales ~ MonthFactor + Unemployment + RAV4Queries + CPIAll + CPIEnergy', data=car_train)\nmodel5 =ols.fit()\nprint(model5.summary())\n\ncols = ['MonthFactor', 'Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\nVIF(car_train, cols)",
+    "id": "746440c89fd342129c434a402e9e9c6d",
+    "idx": 14,
+    "time": "2021-02-10T00:26:03.892Z",
+    "type": "execution"
+   },
+   {
+    "id": "746440c89fd342129c434a402e9e9c6d",
+    "time": "2021-02-10T00:26:04.294Z",
+    "type": "completion"
+   },
+   {
+    "code": "import statsmodels.formula.api as smf\n\nols = smf.ols(formula='RAV4Sales ~ MonthFactor + Unemployment + RAV4Queries + CPIAll + CPIEnergy', data=car_train)\nmodel5 =ols.fit()\nprint(model5.summary())\n\ncols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\nVIF(car_train, cols)",
+    "id": "746440c89fd342129c434a402e9e9c6d",
+    "idx": 14,
+    "time": "2021-02-10T00:26:17.843Z",
+    "type": "execution"
+   },
+   {
+    "id": "746440c89fd342129c434a402e9e9c6d",
+    "time": "2021-02-10T00:26:17.992Z",
+    "type": "completion"
+   },
+   {
+    "code": "import statsmodels.formula.api as smf\n\nols = smf.ols(formula='RAV4Sales ~ MonthFactor + Unemployment + RAV4Queries, data=car_train)\nmodelc =ols.fit()\nprint(modelc.summary())\n\n# cols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\n# VIF(car_train, cols)",
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "idx": 17,
+    "time": "2021-02-10T00:26:50.503Z",
+    "type": "execution"
+   },
+   {
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "time": "2021-02-10T00:26:50.583Z",
+    "type": "completion"
+   },
+   {
+    "code": "import statsmodels.formula.api as smf\n\nols = smf.ols(formula= 'RAV4Sales ~ MonthFactor + Unemployment + RAV4Queries', data=car_train)\nmodelc =ols.fit()\nprint(modelc.summary())\n\n# cols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\n# VIF(car_train, cols)",
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "idx": 17,
+    "time": "2021-02-10T00:27:04.912Z",
+    "type": "execution"
+   },
+   {
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "time": "2021-02-10T00:27:05.007Z",
+    "type": "completion"
+   },
+   {
+    "code": "import statsmodels.formula.api as smf\n\nols = smf.ols(formula= 'RAV4Sales ~ MonthFactor + CPIEnergy', data=car_train)\nmodelc =ols.fit()\nprint(modelc.summary())\n\n# cols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\n# VIF(car_train, cols)",
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "idx": 17,
+    "time": "2021-02-10T01:07:57.162Z",
+    "type": "execution"
+   },
+   {
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "time": "2021-02-10T01:07:57.331Z",
+    "type": "completion"
+   },
+   {
+    "code": "import statsmodels.formula.api as smf\n\nols = smf.ols(formula= 'RAV4Sales ~ MonthFactor + CPIAll + CPIEnergy', data=car_train)\nmodelc =ols.fit()\nprint(modelc.summary())\n\n# cols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\n# VIF(car_train, cols)",
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "idx": 17,
+    "time": "2021-02-10T01:08:07.178Z",
+    "type": "execution"
+   },
+   {
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "time": "2021-02-10T01:08:07.272Z",
+    "type": "completion"
+   },
+   {
+    "code": "import statsmodels.formula.api as smf\n\nols = smf.ols(formula= 'RAV4Sales ~ MonthFactor + CPIAll', data=car_train)\nmodelc =ols.fit()\nprint(modelc.summary())\n\n# cols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\n# VIF(car_train, cols)",
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "idx": 17,
+    "time": "2021-02-10T01:08:17.651Z",
+    "type": "execution"
+   },
+   {
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "time": "2021-02-10T01:08:17.749Z",
+    "type": "completion"
+   },
+   {
+    "code": "import statsmodels.formula.api as smf\n\nols = smf.ols(formula= 'RAV4Sales ~ MonthFactor + CPIAll + CPIEnergy', data=car_train)\nmodelc =ols.fit()\nprint(modelc.summary())\n\n# cols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\n# VIF(car_train, cols)",
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "idx": 17,
+    "time": "2021-02-10T01:08:26.799Z",
+    "type": "execution"
+   },
+   {
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "time": "2021-02-10T01:08:26.888Z",
+    "type": "completion"
+   },
+   {
+    "code": "import statsmodels.formula.api as smf\n\nols = smf.ols(formula= 'RAV4Sales ~ MonthFactor + Unemployment + CPIAll + CPIEnergy', data=car_train)\nmodelc =ols.fit()\nprint(modelc.summary())\n\n# cols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\n# VIF(car_train, cols)",
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "idx": 17,
+    "time": "2021-02-10T01:08:54.632Z",
+    "type": "execution"
+   },
+   {
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "time": "2021-02-10T01:08:54.732Z",
+    "type": "completion"
+   },
+   {
+    "code": "import statsmodels.formula.api as smf\n\nols = smf.ols(formula= 'RAV4Sales ~ MonthFactor + CPIAll + CPIEnergy', data=car_train)\nmodelc =ols.fit()\nprint(modelc.summary())\n\n# cols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\n# VIF(car_train, cols)",
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "idx": 17,
+    "time": "2021-02-10T01:09:07.072Z",
+    "type": "execution"
+   },
+   {
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "time": "2021-02-10T01:09:07.188Z",
+    "type": "completion"
+   },
+   {
+    "code": "import statsmodels.formula.api as smf\n\nols = smf.ols(formula= 'RAV4Sales ~ MonthFactor + RAV4Queries+ CPIAll + CPIEnergy', data=car_train)\nmodelc =ols.fit()\nprint(modelc.summary())\n\n# cols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\n# VIF(car_train, cols)",
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "idx": 17,
+    "time": "2021-02-10T01:09:17.702Z",
+    "type": "execution"
+   },
+   {
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "time": "2021-02-10T01:09:17.811Z",
+    "type": "completion"
+   },
+   {
+    "code": "import statsmodels.formula.api as smf\n\nols = smf.ols(formula= 'RAV4Sales ~ MonthFactor + Unemployment + RAV4Queries', data=car_train)\nmodelc =ols.fit()\nprint(modelc.summary())\n\n# cols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\n# VIF(car_train, cols)",
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "idx": 17,
+    "time": "2021-02-10T01:09:32.191Z",
+    "type": "execution"
+   },
+   {
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "time": "2021-02-10T01:09:32.295Z",
+    "type": "completion"
+   },
+   {
+    "code": "import statsmodels.formula.api as smf\n\nols = smf.ols(formula= 'RAV4Sales ~ MonthFactor + Unemployment + RAV4Queries', data=car_test)\nmodelc =ols.fit()\nprint(modelc.summary())\n\n# cols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\n# VIF(car_train, cols)",
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "idx": 17,
+    "time": "2021-02-10T01:12:29.082Z",
+    "type": "execution"
+   },
+   {
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "time": "2021-02-10T01:12:29.190Z",
+    "type": "completion"
+   },
+   {
+    "code": "import statsmodels.formula.api as smf\n\nols = smf.ols(formula= 'RAV4Sales ~ MonthFactor + Unemployment + RAV4Queries', data=car_train)\nmodelc =ols.fit()\nprint(modelc.summary())\n\n# cols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\n# VIF(car_train, cols)",
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "idx": 17,
+    "time": "2021-02-10T01:13:12.325Z",
+    "type": "execution"
+   },
+   {
+    "code": "import statsmodels.formula.api as smf\n\nols = smf.ols(formula= 'RAV4Sales ~ MonthFactor + Unemployment + RAV4Queries', data=car_train)\nmodelc =ols.fit()\nprint(modelc.summary())\n\n# cols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\n# VIF(car_train, cols)",
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "idx": 17,
+    "time": "2021-02-10T01:14:00.835Z",
+    "type": "execution"
+   },
+   {
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "time": "2021-02-10T01:15:53.200Z",
+    "type": "completion"
+   },
+   {
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "time": "2021-02-10T01:15:53.202Z",
+    "type": "completion"
+   },
+   {
+    "code": "import statsmodels.formula.api as smf\n\nols = smf.ols(formula= 'RAV4Sales ~ MonthFactor + Unemployment + RAV4Queries', data=car_test)\nmodelc =ols.fit()\nprint(modelc.summary())\n\n# cols = ['Unemployment', 'RAV4Queries', 'CPIAll', 'CPIEnergy']\n# VIF(car_train, cols)",
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "idx": 17,
+    "time": "2021-02-10T01:17:06.893Z",
+    "type": "execution"
+   },
+   {
+    "id": "a4f21648730a416084489e6af2f87c22",
+    "time": "2021-02-10T01:17:06.988Z",
+    "type": "completion"
+   },
+   {
+    "code": "car",
+    "id": "0410fcf52fdd4d4791c5fe96747ec75e",
+    "idx": 20,
+    "time": "2021-02-10T01:26:08.088Z",
+    "type": "execution"
+   },
+   {
+    "id": "0410fcf52fdd4d4791c5fe96747ec75e",
+    "time": "2021-02-10T01:26:08.184Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_csv('RIFLPBCIANM60NM.csv')\n",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:38:01.950Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:38:02.020Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_csv('RIFLPBCIANM60NM.csv')\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:38:07.197Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:38:07.281Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx')\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:40:59.532Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:40:59.858Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name 'Data')\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:41:25.721Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:41:25.829Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:41:30.895Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:41:31.010Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:43:23.763Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:43:23.893Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate.dropna()\n",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:44:00.010Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:44:00.401Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate\n",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:44:20.091Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:44:20.219Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate.rename(columns={\"Unnamed: 1\": \"Month\", \"Unnamed: 2\": \"LoanRate\"}",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:46:28.754Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:46:28.873Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate.rename(columns={\"Unnamed: 1\": \"Month\", \"Unnamed: 2\": \"LoanRate\"})",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:46:33.422Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:46:33.548Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate.rename(columns={\"Unnamed: 1\": \"Month\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = 'Unnamed: 0', 'Unnamed: 3')",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:47:51.383Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:47:51.456Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate.rename(columns={\"Unnamed: 1\": \"Month\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:48:10.225Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:48:10.342Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"Month\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\nfinance_rate.dropna\n\n",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:48:29.339Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:48:29.446Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"Month\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\nfinance_rate.dropna()\n",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:48:34.929Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:48:35.067Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\nfinance_rate.dropna()\n",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:48:47.145Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:48:47.295Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\nfinance_rate.dropna()\nfinance_rate['Year'] = finance_rate['MonthFactor'].map(lamda x: int(x.split(' ')[1]))",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:50:53.864Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:50:53.938Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\nfinance_rate.dropna()\nfinance_rate['Year'] = finance_rate['MonthFactor'].map(lambda x: int(x.split(' ')[1]))",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:51:05.765Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:51:05.963Z",
+    "type": "completion"
+   },
+   {
+    "code": "type(car['Year'])",
+    "id": "84b602aafb2a443f8d66ca0a2cd4cd67",
+    "idx": 22,
+    "time": "2021-02-10T01:51:32.889Z",
+    "type": "execution"
+   },
+   {
+    "id": "84b602aafb2a443f8d66ca0a2cd4cd67",
+    "time": "2021-02-10T01:51:32.971Z",
+    "type": "completion"
+   },
+   {
+    "code": "type(car['Year'][0])",
+    "id": "84b602aafb2a443f8d66ca0a2cd4cd67",
+    "idx": 22,
+    "time": "2021-02-10T01:51:37.240Z",
+    "type": "execution"
+   },
+   {
+    "id": "84b602aafb2a443f8d66ca0a2cd4cd67",
+    "time": "2021-02-10T01:51:37.350Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\nfinance_rate.dropna()\nfinance_rate['Year'] = finance_rate['MonthFactor'][:5]",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:51:59.427Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:51:59.527Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\nfinance_rate.dropna()\nfinance_rate['Year'] = finance_rate['MonthFactor'][:5]\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:52:04.456Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:52:04.594Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\nfinance_rate.dropna()\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:52:23.893Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:52:24.059Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\nfinance_rate = finance_rate.dropna()\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:52:41.546Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:52:41.670Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\nfinance_rate = finance_rate.dropna()\nfinance_rate['Year'] = finance_rate['MonthFactor'][:-5]\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:52:56.486Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:52:56.613Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\nfinance_rate = finance_rate.dropna()\nfinance_rate['Year'] = finance_rate['MonthFactor'][:-4]\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:53:29.054Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:53:29.196Z",
+    "type": "completion"
+   },
+   {
+    "code": "type(finance_rate['MonthFactor'][0])",
+    "id": "84b602aafb2a443f8d66ca0a2cd4cd67",
+    "idx": 22,
+    "time": "2021-02-10T01:53:44.904Z",
+    "type": "execution"
+   },
+   {
+    "id": "84b602aafb2a443f8d66ca0a2cd4cd67",
+    "time": "2021-02-10T01:53:45.037Z",
+    "type": "completion"
+   },
+   {
+    "code": "type(finance_rate['MonthFactor'])",
+    "id": "84b602aafb2a443f8d66ca0a2cd4cd67",
+    "idx": 22,
+    "time": "2021-02-10T01:54:10.114Z",
+    "type": "execution"
+   },
+   {
+    "id": "84b602aafb2a443f8d66ca0a2cd4cd67",
+    "time": "2021-02-10T01:54:10.184Z",
+    "type": "completion"
+   },
+   {
+    "code": "type(finance_rate['MonthFactor'][5])",
+    "id": "84b602aafb2a443f8d66ca0a2cd4cd67",
+    "idx": 22,
+    "time": "2021-02-10T01:54:15.842Z",
+    "type": "execution"
+   },
+   {
+    "id": "84b602aafb2a443f8d66ca0a2cd4cd67",
+    "time": "2021-02-10T01:54:16.969Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\nfinance_rate = finance_rate.dropn([0:4])\nfinance_rate['Year'] = finance_rate['MonthFactor'][:-4]\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:55:03.249Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:55:03.342Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\nfinance_rate = finance_rate.drop([0:4])\nfinance_rate['Year'] = finance_rate['MonthFactor'][:-4]\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:55:11.009Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:55:11.101Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\nfinance_rate = finance_rate.drop([0,4])\nfinance_rate['Year'] = finance_rate['MonthFactor'][:-4]\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:55:47.312Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:55:47.431Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\nfinance_rate = finance_rate.drop([0,3])\nfinance_rate['Year'] = finance_rate['MonthFactor'][:-4]\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:56:09.115Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:56:09.265Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\nfinance_rate = finance_rate.drop([0:3])\nfinance_rate['Year'] = finance_rate['MonthFactor'][:-4]\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:56:18.005Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:56:20.607Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\nfinance_rate = finance_rate.drop([0,1,2,3])\nfinance_rate['Year'] = finance_rate['MonthFactor'][:-4]\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:56:30.644Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:56:30.782Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\nfinance_rate = finance_rate.drop([0,1,2,3,88,89])\nfinance_rate['Year'] = finance_rate['MonthFactor'][:-4]\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:56:42.595Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:56:42.741Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nfinance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\nfinance_rate = finance_rate.drop([0,1,2,3,88,89])\nfinance_rate['Year'] = finance_rate['MonthFactor'][:-4]\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:57:48.675Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:57:48.883Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\n# finance_rate['Year'] = finance_rate['MonthFactor'][:-4]\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T01:58:01.499Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T01:58:01.616Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\nfinance_rate['Year'] = finance_rate['MonthFactor'][0:3]\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:01:57.652Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:01:57.837Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\nfinance_rate['Year'] = finance_rate['MonthFactor'].str[0:3]\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:02:05.324Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:02:05.448Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\nfinance_rate['Year'] = finance_rate['MonthFactor'].map(lambda x: int(x.split())\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:03:54.707Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:03:54.792Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\n# finance_rate['Year'] = finance_rate['MonthFactor'].map(lambda x: int(x.split())\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:04:20.276Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:04:20.391Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\nfinance_rate['Year'] = finance_rate['Jan 2014'].map(lambda x: int(x.split())\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:04:34.316Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:04:34.382Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\nfinance_rate['Year'] = finance_rate['Jan 2014'].map(lambda x: int(x.split()[0])\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:04:45.712Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:04:45.783Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\nfinance_rate['Year'] = finance_rate['Jan 2014'].map(lambda x: int(x.split()[0])\n",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:04:54.408Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:04:54.476Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\nfinance_rate['Year'] = finance_rate['Jan 2014'].map(lambda x: int(x.split()[0]))\n",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:04:59.381Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:04:59.507Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\nfinance_rate['Year'] = finance_rate['Jan 2014'].map(lambda x: x.split()[0])\n",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:05:09.605Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:05:09.693Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate",
+    "id": "5a83473278444fbead9f298011187cca",
+    "idx": 23,
+    "time": "2021-02-10T02:05:17.323Z",
+    "type": "execution"
+   },
+   {
+    "id": "5a83473278444fbead9f298011187cca",
+    "time": "2021-02-10T02:05:17.401Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\nfinance_rate['Year'] = finance_rate['Jan 2014'].map(lambda x: x.split()[0])\nfiance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:07:35.604Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:07:35.733Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\nfinance_rate['Year'] = finance_rate['Jan 2014'].map(lambda x: x.split()[0])\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:07:44.931Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:07:45.239Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\nfinance_rate['Year'] = finance_rate['Jan 2014'].map(lambda x: x.split()[0])\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:10:06.654Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:10:06.825Z",
+    "type": "completion"
+   },
+   {
+    "code": "finance_rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\n# finance_rate['Year'] = finance_rate['Jan 2014'].map(lambda x: x.split()[0])\nfinance_rate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:10:12.808Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:10:12.909Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\n# finance_rate['Year'] = finance_rate['Jan 2014'].map(lambda x: x.split()[0])\nrate.to_datetime(df.MONTH, format='%b').dt.month\nrate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:16:08.782Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:16:08.916Z",
+    "type": "completion"
+   },
+   {
+    "code": "import numpy as np\nimport pandas as pd",
+    "id": "4fdb070563404ff8a5153ff8544733cc",
+    "idx": 0,
+    "time": "2021-02-10T02:16:26.387Z",
+    "type": "execution"
+   },
+   {
+    "id": "4fdb070563404ff8a5153ff8544733cc",
+    "time": "2021-02-10T02:16:26.455Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\n# finance_rate['Year'] = finance_rate['Jan 2014'].map(lambda x: x.split()[0])\nrate.to_datetime(df.MONTH, format='%b').dt.month\nrate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:16:32.492Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:16:32.594Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\n# finance_rate['Year'] = finance_rate['Jan 2014'].map(lambda x: x.split()[0])\nrate.to_datetime(rate.MONTH, format='%b').dt.month\nrate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:16:45.784Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:16:45.922Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\n# finance_rate['Year'] = finance_rate['Jan 2014'].map(lambda x: x.split()[0])\npd.to_datetime(rate.MONTH, format='%b').dt.monthrate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:17:49.773Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:17:49.902Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\n# finance_rate['Year'] = finance_rate['Jan 2014'].map(lambda x: x.split()[0])\npd.to_datetime(rate.MonthFactor, format='%b').dt.monthrate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:18:08.032Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:18:08.156Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\n# finance_rate['Year'] = finance_rate['Jan 2014'].map(lambda x: x.split()[0])\npd.to_datetime(rate.MonthFactor, format='%b').dt.month\nrate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:18:20.949Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:18:21.162Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\n# finance_rate['Year'] = finance_rate['Jan 2014'].map(lambda x: x.split()[0])\npd.to_datetime(rate.MonthFactor, format='%b').dt\nrate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:18:35.984Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:18:36.127Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\n# finance_rate['Year'] = finance_rate['Jan 2014'].map(lambda x: x.split()[0])\npd.to_datetime(rate.MonthFactor, format='%b').dt",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:18:48.046Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:18:48.189Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\n# finance_rate['Year'] = finance_rate['Jan 2014'].map(lambda x: x.split()[0])\npd.to_datetime(rate.MonthFactor, format='%b').dt.month",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:18:52.735Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:18:52.847Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\n# finance_rate['Year'] = finance_rate['Jan 2014'].map(lambda x: x.split()[0])\nrate['a'] = pd.to_datetime(rate.MonthFactor, format='%b').dt.month",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:19:11.691Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:19:11.791Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\n# finance_rate['Year'] = finance_rate['Jan 2014'].map(lambda x: x.split()[0])\nrate['a'] = pd.to_datetime(rate.MonthFactor, format='%b').dt.month\nrate",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:19:18.520Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:19:18.672Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\n# finance_rate['Year'] = finance_rate['Jan 2014'].map(lambda x: x.split()[0])\nrate['a'] = pd.to_datetime(rate.MonthFactor, format='%b').dt.month\nrate.head(20)",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:19:26.754Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:19:26.872Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\n# finance_rate = finance_rate.rename(columns={\"Unnamed: 1\": \"MonthFactor\", \"Unnamed: 2\": \"LoanRate\"}).drop(columns = ['Unnamed: 0', 'Unnamed: 3'])\n# finance_rate = finance_rate.drop([0,1,2,3,88,89])\n# finance_rate['Year'] = finance_rate['Jan 2014'].map(lambda x: x.split()[0])\nrate['MonthNumeric'] = pd.to_datetime(rate.MonthFactor, format='%b').dt.month\nrate.head(20)",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:19:36.367Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:19:36.532Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nrate['MonthNumeric'] = pd.to_datetime(rate.MonthFactor, format='%b').dt.month\ncombined = pd.merge(car, rate, how='left', on=['Year', 'MonthNumeric'])",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:21:47.630Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:21:47.769Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nrate['MonthNumeric'] = pd.to_datetime(rate.MonthFactor, format='%b').dt.month\ncombined = pd.merge(car, rate, how='left', on=['Year', 'MonthNumeric'])\ncombined",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:21:51.528Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:21:51.679Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nrate = rate.drop(columns = 'MonthFactor')\nrate['MonthNumeric'] = pd.to_datetime(rate.MonthFactor, format='%b').dt.month\ncombined = pd.merge(car, rate, how='left', on=['Year', 'MonthNumeric'])\ncombined",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:22:31.082Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:22:31.245Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nrate = rate.drop(columns = ['MonthFactor'])\nrate['MonthNumeric'] = pd.to_datetime(rate.MonthFactor, format='%b').dt.month\ncombined = pd.merge(car, rate, how='left', on=['Year', 'MonthNumeric'])\ncombined",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:22:41.261Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:22:41.399Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nrate\nrate['MonthNumeric'] = pd.to_datetime(rate.MonthFactor, format='%b').dt.month\ncombined = pd.merge(car, rate, how='left', on=['Year', 'MonthNumeric'])\ncombined",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:25:39.915Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:25:40.044Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nrate = rate.drop(columns = ['MonthFactor'])\nrate['MonthNumeric'] = pd.to_datetime(rate.MonthFactor, format='%b').dt.month\ncombined = pd.merge(car, rate, how='left', on=['Year', 'MonthNumeric'])\ncombined",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:25:49.537Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:25:49.651Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nrate = rate.drop(columns = ['MonthFactor '])\nrate['MonthNumeric'] = pd.to_datetime(rate.MonthFactor, format='%b').dt.month\ncombined = pd.merge(car, rate, how='left', on=['Year', 'MonthNumeric'])\ncombined",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:25:52.753Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:25:52.930Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nrate #= rate.drop(columns = ['MonthFactor '])\n# rate['MonthNumeric'] = pd.to_datetime(rate.MonthFactor, format='%b').dt.month\n# combined = pd.merge(car, rate, how='left', on=['Year', 'MonthNumeric'])\n# combined",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:26:10.578Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:26:10.728Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nrate.iloc[:][1] #rate.drop(columns = ['MonthFactor '])\n# rate['MonthNumeric'] = pd.to_datetime(rate.MonthFactor, format='%b').dt.month\n# combined = pd.merge(car, rate, how='left', on=['Year', 'MonthNumeric'])\n# combined",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:27:15.338Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:27:15.581Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nrate = rate.drop(columns = ['MonthFactor '])\n# rate['MonthNumeric'] = pd.to_datetime(rate.MonthFactor, format='%b').dt.month\n# combined = pd.merge(car, rate, how='left', on=['Year', 'MonthNumeric'])\n# combined",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:27:29.872Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:27:30.027Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nrate = rate.drop(columns = ['Year'])\n# rate['MonthNumeric'] = pd.to_datetime(rate.MonthFactor, format='%b').dt.month\n# combined = pd.merge(car, rate, how='left', on=['Year', 'MonthNumeric'])\n# combined",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:27:40.486Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:27:40.583Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nrate = rate.drop(columns = ['MonthFactor'])\n# rate['MonthNumeric'] = pd.to_datetime(rate.MonthFactor, format='%b').dt.month\n# combined = pd.merge(car, rate, how='left', on=['Year', 'MonthNumeric'])\n# combined",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:28:19.494Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:28:19.605Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nrate = rate.drop(columns = ['MonthFactor'])\nrate\n# rate['MonthNumeric'] = pd.to_datetime(rate.MonthFactor, format='%b').dt.month\n# combined = pd.merge(car, rate, how='left', on=['Year', 'MonthNumeric'])\n# combined",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:28:25.980Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:28:26.113Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nrate = rate.drop(columns = ['MonthFactor'])\nrate['MonthNumeric'] = pd.to_datetime(rate.MonthFactor, format='%b').dt.month\ncombined = pd.merge(car, rate, how='left', on=['Year', 'MonthNumeric'])\ncombined",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:28:34.765Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:28:34.903Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nrate['MonthNumeric'] = pd.to_datetime(rate.MonthFactor, format='%b').dt.month\nrate = rate.drop(columns = ['MonthFactor'])\ncombined = pd.merge(car, rate, how='left', on=['Year', 'MonthNumeric'])\ncombined",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:28:51.120Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:28:51.278Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nrate['MonthNumeric'] = pd.to_datetime(rate.MonthFactor, format='%b').dt.month\nrate = rate.drop(columns = ['MonthFactor'])\ndata = pd.merge(car, rate, how='left', on=['Year', 'MonthNumeric'])\ndata_train = data[data['Year'] <= 2016]\ndata_test = data[data['Year'] >= 2017]\ndata_test;",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:30:01.691Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:30:01.798Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nrate['MonthNumeric'] = pd.to_datetime(rate.MonthFactor, format='%b').dt.month\nrate = rate.drop(columns = ['MonthFactor'])\ndata = pd.merge(car, rate, how='left', on=['Year', 'MonthNumeric'])\ndata_train = data[data['Year'] <= 2016]\ndata_test = data[data['Year'] >= 2017]\ndata_test",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:30:04.443Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:30:04.675Z",
+    "type": "completion"
+   },
+   {
+    "code": "rate = pd.read_excel('statistic_id290673_monthly-car-loan-rates-in-the-us-2014-2020.xlsx', sheet_name ='Data')\nrate['MonthNumeric'] = pd.to_datetime(rate.MonthFactor, format='%b').dt.month\nrate = rate.drop(columns = ['MonthFactor'])\ndata = pd.merge(car, rate, how='left', on=['Year', 'MonthNumeric'])\ndata_train = data[data['Year'] <= 2016]\ndata_test = data[data['Year'] >= 2017]\ndata_train",
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "idx": 21,
+    "time": "2021-02-10T02:30:16.437Z",
+    "type": "execution"
+   },
+   {
+    "id": "591fb49ce50949778e4636b5c508c815",
+    "time": "2021-02-10T02:30:16.583Z",
+    "type": "completion"
+   },
+   {
+    "code": "model2 = smf.ols(formula='RAV4Sales ~ Unemployment + RAV4Queries + LoanRate', data=data_train).fit()\nprint(model2.summary())\n\n# cols = ['Unemployment', 'RAV4Queries']\n# VIF(data_train, cols)",
+    "id": "9a1e79160cf141bc8961a050cb08722e",
+    "idx": 22,
+    "time": "2021-02-10T02:31:21.101Z",
+    "type": "execution"
+   },
+   {
+    "id": "9a1e79160cf141bc8961a050cb08722e",
+    "time": "2021-02-10T02:31:21.194Z",
+    "type": "completion"
+   },
+   {
+    "code": "model2 = smf.ols(formula='RAV4Sales ~ MonthFactor + Unemployment + RAV4Queries + LoanRate', data=data_train).fit()\nprint(model2.summary())\n\n# cols = ['Unemployment', 'RAV4Queries']\n# VIF(data_train, cols)",
+    "id": "9a1e79160cf141bc8961a050cb08722e",
+    "idx": 22,
+    "time": "2021-02-10T02:32:07.495Z",
+    "type": "execution"
+   },
+   {
+    "id": "9a1e79160cf141bc8961a050cb08722e",
+    "time": "2021-02-10T02:32:07.588Z",
+    "type": "completion"
+   },
+   {
+    "code": "model2 = smf.ols(formula='RAV4Sales ~ MonthFactor + Unemployment + RAV4Queries + LoanRate', data=data_test).fit()\nprint(model2.summary())\n\n# cols = ['Unemployment', 'RAV4Queries']\n# VIF(data_train, cols)",
+    "id": "9a1e79160cf141bc8961a050cb08722e",
+    "idx": 22,
+    "time": "2021-02-10T02:32:18.010Z",
+    "type": "execution"
+   },
+   {
+    "id": "9a1e79160cf141bc8961a050cb08722e",
+    "time": "2021-02-10T02:32:18.104Z",
+    "type": "completion"
+   },
+   {
+    "code": "model2 = smf.ols(formula='RAV4Sales ~ MonthFactor + Unemployment + RAV4Queries + LoanRate', data=data_train).fit()\nprint(model2.summary())\n\n# cols = ['Unemployment', 'RAV4Queries']\n# VIF(data_train, cols)",
+    "id": "9a1e79160cf141bc8961a050cb08722e",
+    "idx": 22,
+    "time": "2021-02-10T02:32:22.331Z",
+    "type": "execution"
+   },
+   {
+    "id": "9a1e79160cf141bc8961a050cb08722e",
+    "time": "2021-02-10T02:32:22.438Z",
+    "type": "completion"
+   },
+   {
+    "code": "model2 = smf.ols(formula='RAV4Sales ~ MonthFactor + Unemployment + RAV4Queries + LoanRate', data=data_test).fit()\nprint(model2.summary())\n\n# cols = ['Unemployment', 'RAV4Queries']\n# VIF(data_train, cols)",
+    "id": "a449dca16f9f490d9894f655ed793310",
+    "idx": 21,
+    "time": "2021-02-10T02:42:49.073Z",
+    "type": "execution"
+   },
+   {
+    "id": "a449dca16f9f490d9894f655ed793310",
+    "time": "2021-02-10T02:42:49.219Z",
+    "type": "completion"
+   },
+   {
+    "code": "model2 = smf.ols(formula='RAV4Sales ~ MonthFactor + Unemployment + RAV4Queries + LoanRate', data=data_train).fit()\nprint(model2.summary())\n\n# cols = ['Unemployment', 'RAV4Queries']\n# VIF(data_train, cols)",
+    "id": "a449dca16f9f490d9894f655ed793310",
+    "idx": 21,
+    "time": "2021-02-10T02:44:14.020Z",
+    "type": "execution"
+   },
+   {
+    "id": "a449dca16f9f490d9894f655ed793310",
+    "time": "2021-02-10T02:44:14.163Z",
+    "type": "completion"
+   }
+  ],
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.9.13"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
